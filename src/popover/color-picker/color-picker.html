@@ -1,0 +1,11 @@
+<ion-list>
+  <ion-item>
+    <ion-range mode="ios" id="hue" min="0" max="359" [(ngModel)]="hsl.h" (ionChange)="calcColor()"></ion-range>
+  </ion-item>
+  <ion-item>
+    <ion-range [ngStyle] mode="ios" id="saturation" min="0" max="100" [(ngModel)]="hsl.s" (ionChange)="calcColor()"></ion-range>
+  </ion-item>
+  <ion-item>
+    <ion-range mode="ios" id="light" min="0" max="100" [(ngModel)]="hsl.l" (ionChange)="calcColor()"></ion-range>
+  </ion-item>
+</ion-list>

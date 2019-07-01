@@ -1,0 +1,92 @@
+page-color-picker {
+    .range-ios {
+        .range-bar {
+          top: 12px;
+          height: 20px;
+        }
+      
+        .range-knob{
+          border: 5px solid white;
+          background: #ff0000;
+        }
+      }
+      
+      #hue.range-ios {
+        .range-bar {
+          background: linear-gradient(to right, rgba(255,0,0,1) 0%,rgba(255,255,0,1) 16.66%,rgba(33,255,0,1) 33.33%,rgba(0,255,255,1) 50%,rgba(0,0,255,1) 66.66%,rgba(255,0,255,1) 83.32%,rgba(255,0,0,1) 100%);
+        }
+      
+        .range-bar.range-bar-active {
+          background: none;
+        }
+      }
+      
+      #saturation.range-ios {
+        .range-bar {
+          background: linear-gradient(to right, rgb(100,100,100) 0%, rgb(255,0,0));
+        }
+      
+        .range-bar.range-bar-active {
+          background: none;
+        }
+      }
+      
+      #light.range-ios {
+        .range-bar {
+          background: linear-gradient(to right, rgb(0,0,0) 0%, rgb(255,0,0) 50%, rgb(255,255,255));
+        }
+      
+        .range-bar.range-bar-active {
+          background: none;
+        }
+      }
+      
+      .list {
+        margin: 0;
+      
+        ion-item {
+          background-color: #5c5c5c;
+          padding-left: 0px !important;
+      
+          .item-inner{
+            padding-left: 8px;
+            border-bottom: 1px solid #7d7d7d !important;
+          }
+        }
+      }
+      
+      ion-item.full {
+        padding: 0;
+        padding-left: 0 !important;
+      
+        .item-inner {
+          padding-right: 0 !important;
+          padding-left: 0px;
+          ion-label{
+            margin: 0;
+            height: 100%;
+            padding: 5px 5px;
+      
+            #display{
+              height: 100%;
+            }
+          }
+        }
+      }
+      
+      .list-ios > .item-block:first-child{
+        border-top: none;
+      }
+      
+      button.button-ios, button.button-md {
+        margin: 0;
+      }
+      
+      .label-ios, .label-md{
+        #display{
+          height: 20px;
+          background-color: red;
+        }
+      }
+      
+}
