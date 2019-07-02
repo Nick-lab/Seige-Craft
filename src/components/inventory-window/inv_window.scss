@@ -1,0 +1,12 @@
+.inventory-window {
+    position: absolute;
+    z-index: 9;
+    background-color: #5e5e5e;
+
+    .header{
+        padding: 3px 5px;
+        background-color: #2c2c2c;
+        color: white;
+        cursor: move;
+    }
+}

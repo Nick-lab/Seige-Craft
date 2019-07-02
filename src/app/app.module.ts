@@ -18,6 +18,8 @@ import { ElectronProvider } from '../providers/electron/electron';
 import { HttpClientModule } from '@angular/common/http';
 import { DataManager } from '../providers/DataManager';
 import { Map } from '../providers/map';
+import { Inventories } from '../providers/Inventories';
+import { InventoryWindow } from '../components/inventory-window/inv_window';
 
 console.log(DataManager);
 
@@ -28,7 +30,8 @@ var config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     HomePage,
     GamePage,
     ColorPickerPage,
-    Inventory
+    Inventory,
+    InventoryWindow
   ],
   imports: [
     BrowserModule,
@@ -43,7 +46,8 @@ var config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     HomePage,
     GamePage,
     ColorPickerPage,
-    Inventory
+    Inventory,
+    InventoryWindow
   ],
   providers: [
     StatusBar,
@@ -51,6 +55,7 @@ var config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     ElectronProvider,
     DataManager,
+    Inventories,
     Map
   ]
 })

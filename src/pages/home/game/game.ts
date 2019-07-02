@@ -1,4 +1,6 @@
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
+import { Inventories } from '../../../providers/Inventories';
+
 import "pixi";
 import "p2";
 import * as Phaser from "phaser-ce";
@@ -14,7 +16,7 @@ export class GamePage implements AfterViewInit{
   menuOpen = false;
   view = this;
   
-  constructor() {
+  constructor(private inventories: Inventories) {
     
   }
   
@@ -31,7 +33,7 @@ export class GamePage implements AfterViewInit{
     this.game.super = this;
     this.game.state.add("scene", Scene, true);
     
-  } 
+  }
 
 }
 
