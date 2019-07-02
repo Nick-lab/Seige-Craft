@@ -10,7 +10,9 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 
 import { GamePage } from '../pages/home/game/game';
+
 import { ColorPickerPage } from '../popover/color-picker/color-picker';
+import { Inventory } from '../components/inventory/inventory';
 
 import { ElectronProvider } from '../providers/electron/electron';
 import { HttpClientModule } from '@angular/common/http';
@@ -25,7 +27,8 @@ var config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     MyApp,
     HomePage,
     GamePage,
-    ColorPickerPage
+    ColorPickerPage,
+    Inventory
   ],
   imports: [
     BrowserModule,
@@ -39,7 +42,8 @@ var config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     MyApp,
     HomePage,
     GamePage,
-    ColorPickerPage
+    ColorPickerPage,
+    Inventory
   ],
   providers: [
     StatusBar,
