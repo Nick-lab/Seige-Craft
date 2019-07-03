@@ -9,6 +9,7 @@ export class Inventories {
 
     dragging: HTMLElement = undefined;
     targetCell: HTMLElement = undefined;
+    item: any = undefined;
     pickedUp = {x: 0,y: 0};
     pickedSize = {x: 0,y: 0};
 
@@ -127,8 +128,8 @@ export class Inventories {
                         y: 6
                     },
                     invPos: {
-                        x: 8,
-                        y: 0
+                        x: 0,
+                        y: 6
                     },
                     type: 'bag',
                     name: 'Scrapper Bag',
@@ -146,7 +147,7 @@ export class Inventories {
                     },
                     invPos: {
                         x: 4,
-                        y: 0
+                        y: 6
                     },
                     type: 'bag',
                     name: 'Scrapper Bag',
@@ -172,6 +173,25 @@ export class Inventories {
                     attributes: {
                         width: 5,
                         height: 6
+                    },
+                    lore: ''
+                },
+                {
+                    size: {
+                        x: 10,
+                        y: 4
+                    },
+                    invPos: {
+                        x: 1,
+                        y: 12
+                    },
+                    type: 'case',
+                    name: 'Large Gun Case',
+                    icon: 'assets/game_assets/icons/large_gun_case.png',
+                    attributes: {
+                        width: 12,
+                        height: 6,
+                        filters: ['gun','magazine','ammo']
                     },
                     lore: ''
                 }
@@ -201,16 +221,15 @@ export class Inventories {
 
     public createInventory(options) {
         return new Promise((res)=>{
-            console.log('create', options);
             this.inventories[options.id] = {
                     label: options.label,
                     size: {
                         c: options.width,
                         r: options.height
                     },
+                    filters: options.filters,
                     items: []
             }
-            console.log(this.inventories);
             res();
         })
     }
@@ -222,7 +241,6 @@ export class Inventories {
     }
 
     public saveInventory(inventory, id){
-        console.log('save inventory', inventory, id);
         this.inventories[id] = inventory;
     }
 

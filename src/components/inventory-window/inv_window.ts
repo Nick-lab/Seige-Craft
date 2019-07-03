@@ -1,4 +1,5 @@
 import { Component, AfterViewInit, ViewChild, Input } from "@angular/core";
+import { Events } from 'ionic-angular';
 import { Inventory } from "../inventory/inventory";
 import { Inventories } from "../../providers/Inventories";
 
@@ -14,27 +15,49 @@ export class InventoryWindow implements AfterViewInit{
     @Input() id: string = undefined;
     inventoryTitle: string = "";
     offsetAmount = 30;
+    index = 100;
+    ignoreEvent = false;
 
-    constructor(private inventories: Inventories) {
-
+    constructor(private inventories: Inventories, private events: Events) {
+        this.events.subscribe('window-move-back', ()=>{
+            if(!this.ignoreEvent){
+                this.index -= 1;
+            }else{
+                this.ignoreEvent = false;
+            }
+        })
     }
 
     ngAfterViewInit() {
-        this.window.nativeElement.style.top = this.inventories.windows.length * this.offsetAmount + "px";
-        this.window.nativeElement.style.left = this.inventories.windows.length * this.offsetAmount + "px";
-        this.dragElement(this.header.nativeElement, this.window.nativeElement);
+        let window = <HTMLElement>this.window.nativeElement;
+        this.index += this.inventories.windows.length;
+        window.style.zIndex = this.index.toString();
+        window.style.top = this.inventories.windows.length * this.offsetAmount + "px";
+        window.style.left = this.inventories.windows.length * this.offsetAmount + "px";
+        this.dragElement(this.header.nativeElement, this.window.nativeElement, this);
     }
 
     onClose() {
         this.inventories.closeWindow(this.id);
     }
 
-    dragElement(head, body) {
+    bringToFront() {
+        console.log('bring to from');
+        this.ignoreEvent = true;
+        this.index = 100 + this.inventories.windows.length;
+        this.window.nativeElement.style.zIndex = this.index;
+        this.events.publish('window-move-back');
+    }
+
+    dragElement(head, body, parent) {
         
         var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
         head.onmousedown = dragMouseDown;
 
         function dragMouseDown(e) {
+            // move dragging element to top
+            parent.bringToFront();
+
             e = e || window.event;
             e.preventDefault();
             // get the mouse cursor position at startup:

@@ -2,10 +2,14 @@ export function Item () {
 
     this.init = (options) => {
         return new Promise((res)=>{
+            // set properties
             Object.keys(options).forEach((key)=>{this[key] = options[key]});
-            this.id = this.getId();
+            // generate new id if new item
+            if(!this.id){this.id = this.getId();}
+
+            // create html element
             this.createElement();
-            res(this.id)
+            res(this.id);
         });
     }
 
@@ -30,6 +34,7 @@ export function Item () {
     }
 
     this.save = () => {
+        // return savable object
         return {
             id: this.id,
             size: this.size,
@@ -51,22 +56,25 @@ export function Item () {
     }
 
     this.getTypeFunctionallity = () => {
-        
-        if(this.type == 'bag'){
+        // load item functionallity
+
+        if(this.type == 'bag' || this.type == "case"){
             // load listeners
             
                 this.element.ondblclick  = () => {
-                    console.log('double click', this.inventories.windows.indexOf(this.id));
+                    // on double click if window not open load inventory
                     if(this.inventories.windows.indexOf(this.id) == -1){
                         this.inventories.loadInventory(this.id).then((inventory)=>{
-                            console.log('bag load', inventory);
+                            // if inventory exists display it
                             if(inventory){
                                 this.inventories.windows.push(this.id);
                             }else{
-                                this.inventories.createInventory({id: this.id, width: this.attributes.width, height: this.attributes.height, label: this.name}).then((inventory)=>{
+                                // create then display inventory
+                                this.inventories.createInventory({id: this.id, width: this.attributes.width, height: this.attributes.height, filters:  this.attributes.filters ? this.attributes.filters : [], label: this.name}).then((inventory)=>{
                                     this.inventories.windows.push(this.id);
                                 })
                             }
+
                         })
                     }
                 }
