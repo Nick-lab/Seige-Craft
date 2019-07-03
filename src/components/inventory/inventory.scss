@@ -29,11 +29,12 @@
             }
 
             .item{
-                background-color: rgb(200, 200, 200);
+                background-color: rgba(200, 200, 200, 0.98);
                 position: absolute;
                 background-position: center;
                 background-size: contain;
                 background-repeat: no-repeat;
+                image-rendering: pixelated;
             }
         }
     }
