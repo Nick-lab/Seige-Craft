@@ -3,10 +3,29 @@
     z-index: 9;
     background-color: #5e5e5e;
 
-    .header{
-        padding: 3px 5px;
-        background-color: #2c2c2c;
-        color: white;
-        cursor: move;
+    .head-container{
+        position: relative;
+        font-size: 0;
+
+        .header{
+            display: inline-block;
+            padding: 3px 5px;
+            background-color: #2c2c2c;
+            color: white;
+            cursor: move;
+            width: calc(100% - 25px);
+            font-size: 16px;
+            vertical-align: top;
+        }
+        .close{
+            width: 25px;
+            height: 25px;
+            text-align: center;
+            display: inline-block;
+            font-size: 16px;
+            padding-top: 2px;
+            background-color: red;
+            vertical-align: top;
+        }
     }
 }

@@ -27,17 +27,17 @@ export class Inventory implements AfterViewInit{
         this.size.r = this.rows;
         this.size.c = this.columns;
         if(!this.id) this.id = this.inventories.getId();
-
+        
         // load inventory
         this.inventories.loadInventory(this.id).then((inventory:any)=>{
             new Promise((res)=>{
                 if(inventory){
-                    console.log(inventory);
                     this.size = inventory.size;
                     this.label = inventory.label;
 
                     if(inventory.items.length > 0) {
                         inventory.items.forEach((itemData, key)=>{
+                            itemData.inventories = this.inventories;
                             let item = new Item();
                             item.init(itemData).then((id)=>{
                                 item.element.ondragstart = (ev: DragEvent)=>{this.onDrag(ev, this);}
@@ -55,6 +55,9 @@ export class Inventory implements AfterViewInit{
                     res();
                 }
             }).then(()=>{
+                console.log(this.size.c, this.getSize(this.size.c) + 19);
+                this.invContainer.nativeElement.style.minWidth = (this.getSize(this.size.c) + 19)+ "px";
+
                 let inv = <HTMLElement>this.invContainer.nativeElement.children[0];
                 inv.setAttribute('data-size-y', this.size.r.toString())
                 inv.setAttribute('data-size-x', this.size.c.toString())
@@ -128,7 +131,7 @@ export class Inventory implements AfterViewInit{
             }
         }
 
-        if(minMax.x.min >= 0 && minMax.y.min >= 0 && minMax.x.max <= parent.size.c - 1 && minMax.y.max <= parent.size.r - 1 && place){
+        if(minMax.x.min >= 0 && minMax.y.min >= 0 && minMax.x.max <= parent.size.c - 1 && minMax.y.max <= parent.size.r - 1 && place && parent.inventories.dragging.id != parent.inventories.targetIventory){
             ev.preventDefault();
             parent.inventories.targetCell = parent.cells[parent.getIndex({x: minMax.x.min, y: minMax.y.min}, parent.size.c)];
         }else{
@@ -152,26 +155,26 @@ export class Inventory implements AfterViewInit{
     }
 
     onDragEnd(ev, parent){
+        let item = parent.items[parent.inventories.dragging.id];
+        item.picked = false;
         if(parent.inventories.targetCell){
-            let item = parent.items[parent.inventories.dragging.id];
-            item.picked = false;
+            
             item.invPos = {
                 x: parseInt(parent.inventories.targetCell.getAttribute('data-cell-x')),
                 y: parseInt(parent.inventories.targetCell.getAttribute('data-cell-y'))
             }
-            parent.recalc();
             parent.inventories.targetCell.appendChild(parent.inventories.dragging);
             if(parent.id != parent.inventories.targetIventory){
                 parent.sendItem(parent.items[parent.inventories.dragging.id]);
                 delete parent.items[parent.inventories.dragging.id];
             }
         }
+        parent.recalc();
         parent.inventories.dragging.style.display = "unset";
         parent.inventories.dragging = undefined;
     }
 
     placeItems() {
-        console.log(this.items);
         Object.keys(this.items).forEach((key)=>{
             let item = this.items[key];
             this.cells[this.getIndex(item.invPos, this.size.c)].appendChild(item.element);
@@ -182,14 +185,13 @@ export class Inventory implements AfterViewInit{
     sendItem(item) {
         this.inventories.getInventory(this.inventories.targetIventory).then((inventory:any)=>{
             inventory.items[item.id] = item;
-            console.log(this.items, inventory.items);
             inventory.recalc(true);
             this.recalc();
+            console.log(this, inventory);
         })
     }
 
     recalc(events = false){
-        console.log('recalc', this.id, this.items);
         this.cells.forEach((cell: HTMLElement)=>{ cell.removeAttribute('filled'); });
         Object.keys(this.items).forEach((key)=>{
             let item = this.items[key];
@@ -207,13 +209,31 @@ export class Inventory implements AfterViewInit{
                             y: y + item.invPos.y
                         };
                         let cell = this.cells[this.getIndex(cellPos, this.size.c)];
-                        console.log(cellPos, cell);
                         if(cell) cell.setAttribute('filled', 'true');
                     }
                 }
             }
+        });
+        this.saveInventory();
+    }
 
+    saveInventory() {
+        new Promise((res)=>{
+            let tmp = {
+                label: this.label,
+                size: this.size,
+                items: [],
+            }
+            Object.keys(this.items).forEach((key, index)=>{
+                tmp.items.push(this.items[key].save());
+                if(Object.keys(this.items).length == index + 1){
+                    res(tmp)
+                }
+            })
+        }).then((inventory)=>{
+            this.inventories.saveInventory(inventory, this.id);
         })
+        
     }
 
     getSize(num){

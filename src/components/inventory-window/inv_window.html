@@ -1,6 +1,11 @@
 <div class="inventory-window" #invWindow>
-    <div class="header" #header>
-        {{ inventory.label }}
+    <div class="head-container">
+        <div class="header" #header>
+            {{ inventory.label }}
+        </div>
+        <div class="close" (click)="onClose()">
+            <ion-icon name="md-close"></ion-icon>
+        </div>
     </div>
     <inventory #inventory [id]="id"></inventory>
 </div>

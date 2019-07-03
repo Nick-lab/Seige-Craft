@@ -1,5 +1,6 @@
 import { Component, AfterViewInit, ViewChild, Input } from "@angular/core";
 import { Inventory } from "../inventory/inventory";
+import { Inventories } from "../../providers/Inventories";
 
 
 @Component({
@@ -12,10 +13,20 @@ export class InventoryWindow implements AfterViewInit{
     @ViewChild('inventory') inventory: Inventory;
     @Input() id: string = undefined;
     inventoryTitle: string = "";
+    offsetAmount = 30;
+
+    constructor(private inventories: Inventories) {
+
+    }
 
     ngAfterViewInit() {
+        this.window.nativeElement.style.top = this.inventories.windows.length * this.offsetAmount + "px";
+        this.window.nativeElement.style.left = this.inventories.windows.length * this.offsetAmount + "px";
         this.dragElement(this.header.nativeElement, this.window.nativeElement);
-        console.log('window inventory', this.inventory);
+    }
+
+    onClose() {
+        this.inventories.closeWindow(this.id);
     }
 
     dragElement(head, body) {
@@ -24,7 +35,6 @@ export class InventoryWindow implements AfterViewInit{
         head.onmousedown = dragMouseDown;
 
         function dragMouseDown(e) {
-            console.log(head, body);
             e = e || window.event;
             e.preventDefault();
             // get the mouse cursor position at startup:

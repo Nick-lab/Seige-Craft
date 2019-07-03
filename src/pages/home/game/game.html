@@ -3,9 +3,13 @@
 
     </div>
     <div id="menuContainer">
-        <inventory id="pockets"></inventory>
-        <inventory id="bag"></inventory>
+        <div class="stash">
+            <inventory id="stash"></inventory>
+        </div>
+
+        <ng-container *ngFor="let inv of inventories.windows">
+            <inventory-window [id]="inv"></inventory-window>
+        </ng-container>
         
-        <inventory-window id="bigbag"></inventory-window>
     </div>
 </ion-content>

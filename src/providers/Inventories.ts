@@ -5,7 +5,7 @@ export class Inventories {
     private list: any = {};
     public targetIventory: String = undefined;
 
-    public popOvers = [];
+    public windows = [];
 
     dragging: HTMLElement = undefined;
     targetCell: HTMLElement = undefined;
@@ -13,11 +13,11 @@ export class Inventories {
     pickedSize = {x: 0,y: 0};
 
     private inventories: any = {
-        pockets: {
-            label: 'Pockets',
+        stash: {
+            label: 'Stash',
             size: {
-                c: 4,
-                r: 1
+                c: 12,
+                r: 32
             },
             items: [
                 {
@@ -78,29 +78,104 @@ export class Inventories {
                     },
                     type: 'knife',
                     name: 'Pocket Knife',
+                    icon: 'assets/game_assets/icons/knife.jpg',
                     attributes: {
                         damage: 30,
                         bleeding: true
                     },
                     lore: ''
+                },
+                {
+                    size: {
+                        x: 4,
+                        y: 2
+                    },
+                    invPos: {
+                        x: 0,
+                        y: 1
+                    },
+                    type: 'gun',
+                    name: 'MP5',
+                    icon: 'assets/game_assets/icons/mp5.png',
+                    attributes: {
+                        damage: 30,
+                        bleeding: true
+                    },
+                    lore: ''
+                },
+                {
+                    size: {
+                        x: 5,
+                        y: 2
+                    },
+                    invPos: {
+                        x: 0,
+                        y: 3
+                    },
+                    type: 'gun',
+                    name: 'M4A1',
+                    icon: 'assets/game_assets/icons/m4a1.png',
+                    attributes: {
+                        damage: 30,
+                        bleeding: true
+                    },
+                    lore: ''
+                },
+                {
+                    size: {
+                        x: 4,
+                        y: 6
+                    },
+                    invPos: {
+                        x: 8,
+                        y: 0
+                    },
+                    type: 'bag',
+                    name: 'Scrapper Bag',
+                    icon: 'assets/game_assets/icons/bag.png',
+                    attributes: {
+                        width: 5,
+                        height: 6
+                    },
+                    lore: ''
+                },
+                {
+                    size: {
+                        x: 4,
+                        y: 6
+                    },
+                    invPos: {
+                        x: 4,
+                        y: 0
+                    },
+                    type: 'bag',
+                    name: 'Scrapper Bag',
+                    icon: 'assets/game_assets/icons/bag.png',
+                    attributes: {
+                        width: 5,
+                        height: 6
+                    },
+                    lore: ''
+                },
+                {
+                    size: {
+                        x: 4,
+                        y: 6
+                    },
+                    invPos: {
+                        x: 8,
+                        y: 6
+                    },
+                    type: 'bag',
+                    name: 'Scrapper Bag',
+                    icon: 'assets/game_assets/icons/bag.png',
+                    attributes: {
+                        width: 5,
+                        height: 6
+                    },
+                    lore: ''
                 }
             ]
-        },
-        bag: {
-            label: 'Bag',
-            size: {
-                c: 6,
-                r: 9
-            },
-            items: []
-        },
-        bigbag: {
-            label: 'Big Bag',
-            size: {
-                c: 10,
-                r: 12
-            },
-            items: []
         }
     }
 
@@ -122,6 +197,33 @@ export class Inventories {
             if(this.inventories[id]) res(this.inventories[id]);
             else res(false);
         })
+    }
+
+    public createInventory(options) {
+        return new Promise((res)=>{
+            console.log('create', options);
+            this.inventories[options.id] = {
+                    label: options.label,
+                    size: {
+                        c: options.width,
+                        r: options.height
+                    },
+                    items: []
+            }
+            console.log(this.inventories);
+            res();
+        })
+    }
+
+    public closeWindow(id) {
+        this.windows.forEach((window, index)=>{
+            if(window == id) this.windows.splice(index, 1);
+        });
+    }
+
+    public saveInventory(inventory, id){
+        console.log('save inventory', inventory, id);
+        this.inventories[id] = inventory;
     }
 
     getId () {
