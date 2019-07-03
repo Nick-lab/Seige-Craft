@@ -194,6 +194,24 @@ export class Inventories {
                         filters: ['gun','magazine','ammo']
                     },
                     lore: ''
+                },
+                {
+                    size: {
+                        x: 4,
+                        y: 3
+                    },
+                    invPos: {
+                        x: 8,
+                        y: 0
+                    },
+                    type: 'bag',
+                    name: 'Duffle Bag',
+                    icon: 'assets/game_assets/icons/duffle_bag.png',
+                    attributes: {
+                        width: 4,
+                        height: 4,
+                    },
+                    lore: ''
                 }
             ]
         }

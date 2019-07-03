@@ -79,6 +79,7 @@ export class Inventory implements AfterViewInit{
                         colEl.setAttribute('data-cell-x', col.toString())
                         colEl.setAttribute('data-cell-y', row.toString())
                         colEl.classList.add('cell');
+                        
                         colEl.ondragover = (ev: DragEvent)=>{this.onDragOver(ev, this)}
                         
                         // add cell to tracking array
