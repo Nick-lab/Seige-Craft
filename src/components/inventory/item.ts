@@ -25,6 +25,8 @@ export function Item () {
             item.style.backgroundImage = `url(${this.icon})`;
         }
 
+        if(this.stackable)
+
         this.element = item;
         
         this.getTypeFunctionallity()
@@ -79,6 +81,10 @@ export function Item () {
                     }
                 }
             
+        }
+
+        if(this.type == 'ammo') {
+
         }
     }
 }

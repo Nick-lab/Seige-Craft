@@ -26,9 +26,25 @@ export class Inventories {
                         x: 1,
                         y: 1
                     },
-                    invPos: {
-                        x: 0,
-                        y: 0
+                    type: 'ammo',
+                    amount: 10,
+                    stackable: 60,
+                    name: '5.56 Nato',
+                    attributes: {
+                        health: 20,
+                        bleeding: false
+                    },
+                    context: [
+                        {
+                            label: "Use"
+                        }
+                    ],
+                    lore: ''
+                },
+                {
+                    size: {
+                        x: 1,
+                        y: 1
                     },
                     type: 'medical',
                     name: 'Bandage',
@@ -47,10 +63,6 @@ export class Inventories {
                     size: {
                         x: 1,
                         y: 1
-                    },
-                    invPos: {
-                        x: 1,
-                        y: 0
                     },
                     type: 'medical',
                     name: 'Bandage',
@@ -73,10 +85,6 @@ export class Inventories {
                         x: 2,
                         y: 1
                     },
-                    invPos: {
-                        x: 2,
-                        y: 0
-                    },
                     type: 'knife',
                     name: 'Pocket Knife',
                     icon: 'assets/game_assets/icons/knife.jpg',
@@ -90,10 +98,6 @@ export class Inventories {
                     size: {
                         x: 4,
                         y: 2
-                    },
-                    invPos: {
-                        x: 0,
-                        y: 1
                     },
                     type: 'gun',
                     name: 'MP5',
@@ -109,10 +113,6 @@ export class Inventories {
                         x: 5,
                         y: 2
                     },
-                    invPos: {
-                        x: 0,
-                        y: 3
-                    },
                     type: 'gun',
                     name: 'M4A1',
                     icon: 'assets/game_assets/icons/m4a1.png',
@@ -124,11 +124,21 @@ export class Inventories {
                 },
                 {
                     size: {
-                        x: 4,
-                        y: 6
+                        x: 6,
+                        y: 2
                     },
-                    invPos: {
-                        x: 0,
+                    type: 'gun',
+                    name: 'SKS',
+                    icon: 'assets/game_assets/icons/sks.png',
+                    attributes: {
+                        damage: 30,
+                        bleeding: true
+                    },
+                    lore: ''
+                },
+                {
+                    size: {
+                        x: 4,
                         y: 6
                     },
                     type: 'bag',
@@ -145,10 +155,6 @@ export class Inventories {
                         x: 4,
                         y: 6
                     },
-                    invPos: {
-                        x: 4,
-                        y: 6
-                    },
                     type: 'bag',
                     name: 'Scrapper Bag',
                     icon: 'assets/game_assets/icons/bag.png',
@@ -161,10 +167,6 @@ export class Inventories {
                 {
                     size: {
                         x: 4,
-                        y: 6
-                    },
-                    invPos: {
-                        x: 8,
                         y: 6
                     },
                     type: 'bag',
@@ -181,10 +183,6 @@ export class Inventories {
                         x: 10,
                         y: 4
                     },
-                    invPos: {
-                        x: 1,
-                        y: 12
-                    },
                     type: 'case',
                     name: 'Large Gun Case',
                     icon: 'assets/game_assets/icons/large_gun_case.png',
@@ -199,10 +197,6 @@ export class Inventories {
                     size: {
                         x: 4,
                         y: 3
-                    },
-                    invPos: {
-                        x: 8,
-                        y: 0
                     },
                     type: 'bag',
                     name: 'Duffle Bag',

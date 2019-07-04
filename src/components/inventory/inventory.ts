@@ -213,7 +213,21 @@ export class Inventory implements AfterViewInit{
         // place loaded items inside inventory
         Object.keys(this.items).forEach((key)=>{
             let item = this.items[key];
-            this.cells[this.getIndex(item.invPos, this.size.c)].appendChild(item.element);
+            item.parentInventory = this;
+            
+            if(item.invPos){
+                this.cells[this.getIndex(item.invPos, this.size.c)].appendChild(item.element);
+            }else{
+                let data:any = this.findSPace(item);
+                item.invPos = {
+                    x: parseInt(data.targetCell.getAttribute('data-cell-x')),
+                    y: parseInt(data.targetCell.getAttribute('data-cell-y'))
+                }
+                data.fillCells.forEach((cell)=>{ cell.setAttribute('filled', 'true'); });
+                data.targetCell.appendChild(item.element);
+            }
+            
+            
         });
         this.recalc();
     }
@@ -300,6 +314,51 @@ export class Inventory implements AfterViewInit{
             this.inventories.saveInventory(inventory, this.id);
         })
         
+    }
+
+    findSPace(item) {
+        if(this.cells.length > 0){
+            for(let i = 0; i < this.cells.length; i ++){
+                let cell = this.cells[i];
+                let canPlace = true;
+                let placeCells = [];
+
+                let invPos = {
+                    x: parseInt(cell.getAttribute('data-cell-x')),
+                    y: parseInt(cell.getAttribute('data-cell-y'))
+                }
+
+                for(let x = 0; x < item.size.x; x++){
+                    for(let y = 0; y < item.size.y; y++){
+                        let cellPos = {
+                            x: x + invPos.x, 
+                            y: y + invPos.y
+                        };
+                        let cell = this.cells[this.getIndex(cellPos, this.size.c)];
+                        if(cell && cell.getAttribute('filled')) {
+                            canPlace = false;
+                            break;
+                        }
+                        if(cellPos.x > this.size.c - 1 || cellPos.y > this.size.r + 1 ){
+                            canPlace = false;
+                            break;
+                        }
+                        placeCells.push(cell);
+                    }
+                    if(!canPlace) break;
+                }
+
+                if(canPlace){
+                    return {targetCell: cell, fillCells: placeCells};
+                }
+
+                if(i == this.cells.length - 1){
+                    return false;
+                }
+            }
+        }else{
+            return false;
+        }
     }
 
     getSize(num){
