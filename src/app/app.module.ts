@@ -20,6 +20,7 @@ import { DataManager } from '../providers/DataManager';
 import { Map } from '../providers/map';
 import { Inventories } from '../providers/Inventories';
 import { InventoryWindow } from '../components/inventory-window/inv_window';
+import { StashPage } from '../pages/home/stash/stash';
 
 console.log(DataManager);
 
@@ -29,6 +30,7 @@ var config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     MyApp,
     HomePage,
     GamePage,
+    StashPage,
     ColorPickerPage,
     Inventory,
     InventoryWindow
@@ -45,6 +47,7 @@ var config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     MyApp,
     HomePage,
     GamePage,
+    StashPage,
     ColorPickerPage,
     Inventory,
     InventoryWindow

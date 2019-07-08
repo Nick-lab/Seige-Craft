@@ -2,7 +2,7 @@
     <div id="gameContainer" #gameContainer>
 
     </div>
-    <div id="menuContainer" [class.open]="inventory">
+    <div class="menuContainer" [class.open]="inventory">
 
         <ng-container *ngFor="let inv of inventories.windows">
             <inventory-window [id]="inv"></inventory-window>

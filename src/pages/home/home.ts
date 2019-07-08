@@ -4,6 +4,7 @@ import { NavController, Events } from 'ionic-angular';
 import { DataManager } from '../../providers/DataManager';
 
 import { GamePage } from './game/game';
+import { StashPage } from './stash/stash';
 
 @Component({
   selector: 'page-home',
@@ -28,6 +29,10 @@ export class HomePage{
   
   onPlay() {
     this.nav.push(GamePage);
+  }
+
+  onStash() {
+    this.nav.push(StashPage);
   }
   
   ionViewDidEnter() {
