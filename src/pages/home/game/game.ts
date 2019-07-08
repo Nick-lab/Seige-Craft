@@ -12,6 +12,7 @@ import * as Phaser from "phaser-ce";
 export class GamePage implements AfterViewInit{
   @ViewChild('gameContainer') gameContainer: any;
  
+  inventory = false;
   game;
   menuOpen = false;
   view = this;
@@ -40,6 +41,9 @@ export class GamePage implements AfterViewInit{
 function Scene() {
   this.preload = function () {
     // load game assets
+
+    let player = this.game.load.sprite('player', 'assets/game_assets/characters/character.png');
+    
   }
   this.create = function () {
     this.physics.startSystem(Phaser.Physics.ARCADE);

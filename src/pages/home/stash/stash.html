@@ -1,8 +1,8 @@
 <ion-content>
-    <div id="gameContainer" #gameContainer>
-
-    </div>
-    <div id="menuContainer" [class.open]="inventory">
+    <div id="menuContainer">
+        <div class="stash">
+            <inventory id="stash"></inventory>
+        </div>
 
         <ng-container *ngFor="let inv of inventories.windows">
             <inventory-window [id]="inv"></inventory-window>

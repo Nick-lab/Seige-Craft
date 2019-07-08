@@ -25,7 +25,14 @@ export function Item () {
             item.style.backgroundImage = `url(${this.icon})`;
         }
 
-        if(this.stackable)
+        if(this.stackable){
+            let stack = document.createElement('span');
+            stack.classList.add('stack');
+            stack.innerHTML = this.amount;
+            item.appendChild(stack);
+        }
+
+
 
         this.element = item;
         
@@ -37,7 +44,7 @@ export function Item () {
 
     this.save = () => {
         // return savable object
-        return {
+        let tmp: any = {
             id: this.id,
             size: this.size,
             invPos: this.invPos,
@@ -47,6 +54,13 @@ export function Item () {
             attributes: this.attributes,
             lore: this.lore
         };
+
+        if(this.stackable && this.amount){
+            tmp.stackable = this.stackable;
+            tmp.amount = this.amount;
+        }
+        
+        return tmp;
     }
 
     this.getSize = (num) => {

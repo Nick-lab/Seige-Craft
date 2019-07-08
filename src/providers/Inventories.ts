@@ -10,6 +10,7 @@ export class Inventories {
     dragging: HTMLElement = undefined;
     targetCell: HTMLElement = undefined;
     item: any = undefined;
+    stack: any = undefined;
     pickedUp = {x: 0,y: 0};
     pickedSize = {x: 0,y: 0};
 
@@ -21,6 +22,66 @@ export class Inventories {
                 r: 32
             },
             items: [
+                {
+                    size: {
+                        x: 1,
+                        y: 1
+                    },
+                    type: 'ammo',
+                    amount: 10,
+                    stackable: 60,
+                    name: '5.56 Nato',
+                    attributes: {
+                        health: 20,
+                        bleeding: false
+                    },
+                    context: [
+                        {
+                            label: "Use"
+                        }
+                    ],
+                    lore: ''
+                },
+                {
+                    size: {
+                        x: 1,
+                        y: 1
+                    },
+                    type: 'ammo',
+                    amount: 10,
+                    stackable: 60,
+                    name: '5.56 Nato',
+                    attributes: {
+                        health: 20,
+                        bleeding: false
+                    },
+                    context: [
+                        {
+                            label: "Use"
+                        }
+                    ],
+                    lore: ''
+                },
+                {
+                    size: {
+                        x: 1,
+                        y: 1
+                    },
+                    type: 'ammo',
+                    amount: 50,
+                    stackable: 60,
+                    name: '5.56 Nato',
+                    attributes: {
+                        health: 20,
+                        bleeding: false
+                    },
+                    context: [
+                        {
+                            label: "Use"
+                        }
+                    ],
+                    lore: ''
+                },
                 {
                     size: {
                         x: 1,

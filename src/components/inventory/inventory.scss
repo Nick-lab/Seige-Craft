@@ -35,6 +35,16 @@
                 background-size: contain;
                 background-repeat: no-repeat;
                 image-rendering: pixelated;
+
+                .stack{
+                    position: absolute;
+                    bottom: 3px;
+                    right: 3px;
+                    color: black;
+                    vertical-align: middle;
+                    font-weight: bold;
+                    font-size: 10px;
+                }
             }
         }
     }

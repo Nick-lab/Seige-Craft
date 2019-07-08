@@ -40,14 +40,15 @@ export class Inventory implements AfterViewInit{
 
                     if(inventory.items.length > 0) {
                         inventory.items.forEach((itemData, key)=>{
-                            itemData.inventories = this.inventories;
                             let item = new Item();
+                            item.inventories = this.inventories;
                             item.init(itemData).then((id)=>{
 
                                 // attach event listeners
                                 item.element.ondragstart = (ev: DragEvent)=>{this.onDrag(ev, this);}
                                 item.element.ondrop = (ev: DragEvent)=>{this.onDrop(ev, this);}
                                 item.element.ondragend = (ev: DragEvent)=>{this.onDragEnd(ev, this);}
+                                item.element.ondragover = (ev: DragEvent)=>{this.onDragOver(ev, this)}
             
                                 this.items[id] = item;
                                 if(inventory.items.length == key + 1) res();
@@ -99,6 +100,9 @@ export class Inventory implements AfterViewInit{
     onDrag(ev: DragEvent, parent){
         // starting event listener defines starting info
         let target = <HTMLElement>ev.toElement;
+        if(target.classList.contains('stack')){
+            target = target.parentElement;
+        }
         let item = this.items[target.id];
         parent.inventories.pickedSize = item.size;
         parent.inventories.item = item;
@@ -115,10 +119,15 @@ export class Inventory implements AfterViewInit{
         /*
             this event is important it is repetedly fired and defines the target cell to drop item along with target inventory
         */
+       ev.stopPropagation();
         let target = <HTMLElement>ev.toElement;
         parent.inventories.targetIventory = parent.id;
+        if(target.classList.contains('stack')){
+            target = target.parentElement;
+        }
 
         // setup check variables
+        let place = true;
         let cellPos = {
             x: parseInt(target.getAttribute('data-cell-x')),
             y: parseInt(target.getAttribute('data-cell-y'))
@@ -134,29 +143,41 @@ export class Inventory implements AfterViewInit{
                 max: cellPos.y + ((parent.inventories.pickedSize.y - 1) - parent.inventories.pickedUp.y)
             }
         }
+        parent.inventories.stack = undefined;
 
-        // check all the cells an item can be placed on for other items
-        let place = true;
-        for(let x = 0; x < parent.inventories.pickedSize.x; x ++){
-            for(let y = 0; y < parent.inventories.pickedSize.y; y ++){
-                let checkPos = {
-                    x: minMax.x.min + x,
-                    y: minMax.y.min + y
-                }
-                let cell = parent.cells[parent.getIndex(checkPos, parent.size.c)];
-                if(cell && cell.getAttribute('filled')){
-                    place = false
+        
+        if(target.classList.contains('item') && parent.items[target.id] && parent.inventories.item){
+            if(parent.items[target.id].name == parent.inventories.item.name){
+                
+                // setup stackable
+                parent.inventories.stack = parent.items[target.id];
+                parent.inventories.targetCell = undefined;
+                ev.preventDefault();
+            }
+        }else{
+            // check all the cells an item can be placed on for other items
+            for(let x = 0; x < parent.inventories.pickedSize.x; x ++){
+                for(let y = 0; y < parent.inventories.pickedSize.y; y ++){
+                    let checkPos = {
+                        x: minMax.x.min + x,
+                        y: minMax.y.min + y
+                    }
+                    let cell = parent.cells[parent.getIndex(checkPos, parent.size.c)];
+                    if(cell && cell.getAttribute('filled')){
+                        place = false
+                    }
                 }
             }
-        }
 
-        // final check will be replaced with a function for item type filtering
-        if(minMax.x.min >= 0 && minMax.y.min >= 0 && minMax.x.max <= parent.size.c - 1 && minMax.y.max <= parent.size.r - 1 && place && parent.canStore() ){
-            // prevent default allows onDrop event to be fired
-            ev.preventDefault();
-            parent.inventories.targetCell = parent.cells[parent.getIndex({x: minMax.x.min, y: minMax.y.min}, parent.size.c)];
-        }else{
-            parent.inventories.targetCell = undefined;
+            // final check will be replaced with a function for item type filtering
+            if(minMax.x.min >= 0 && minMax.y.min >= 0 && minMax.x.max <= parent.size.c - 1 && minMax.y.max <= parent.size.r - 1 && place && parent.canStore() ){
+                // prevent default allows onDrop event to be fired
+                ev.preventDefault();
+                parent.inventories.targetCell = parent.cells[parent.getIndex({x: minMax.x.min, y: minMax.y.min}, parent.size.c)];
+            }else{
+                parent.inventories.targetCell = undefined;
+            }
+
         }
 
         // final variable settings
@@ -182,10 +203,9 @@ export class Inventory implements AfterViewInit{
     onDragEnd(ev, parent){
         // for dropping anywhere other than target cells
 
-
         let item = parent.items[parent.inventories.dragging.id];
         item.picked = false;
-        if(parent.inventories.targetCell){
+        if(parent.inventories.targetCell && !parent.inventories.stack){
             // update items inventory position and place element in target cell
             let item = parent.items[parent.inventories.dragging.id];
             item.picked = false;
@@ -196,9 +216,12 @@ export class Inventory implements AfterViewInit{
             parent.inventories.targetCell.appendChild(parent.inventories.dragging);
             if(parent.id != parent.inventories.targetIventory){
                 // if target inventory in another inventory send that inventoy the item object
-                parent.sendItem(parent.items[parent.inventories.dragging.id]);
-                delete parent.items[parent.inventories.dragging.id];
+                parent.sendItem(item);
+                delete parent.items[item.id];
             }
+        }else{
+            parent.sendStack(item, parent.inventories.stack);
+            delete parent.items[item.id];
         }
 
         // recalculate the filled cells, save the inventory and show the element
@@ -214,7 +237,7 @@ export class Inventory implements AfterViewInit{
         Object.keys(this.items).forEach((key)=>{
             let item = this.items[key];
             item.parentInventory = this;
-            
+
             if(item.invPos){
                 this.cells[this.getIndex(item.invPos, this.size.c)].appendChild(item.element);
             }else{
@@ -235,8 +258,37 @@ export class Inventory implements AfterViewInit{
     sendItem(item) {
         // send item to another inventory
         this.inventories.getInventory(this.inventories.targetIventory).then((inventory:any)=>{
+            item.parentInventory = inventory;
             inventory.items[item.id] = item;
-            console.log('send item', this, inventory);
+
+            inventory.recalc(true).then(()=>{ inventory.saveInventory(); });
+            this.recalc().then(()=>{ this.saveInventory(); });
+        });
+    }
+
+    sendStack(sendItem, stackItem) {
+        // send item to stack
+        this.inventories.getInventory(this.inventories.targetIventory).then((inventory:any)=>{
+            let stackTotal = stackItem.stackable;
+            if(sendItem.amount + stackItem.amount <= stackTotal){
+                stackItem.amount += sendItem.amount;
+                sendItem.element.parentNode.removeChild(sendItem.element);
+                stackItem.element.children[0].innerHTML = stackItem.amount;
+            }else{
+                sendItem.amount = (sendItem.amount + stackItem.amount) - stackTotal;
+                stackItem.amount = stackTotal;
+                
+                let data:any = this.findSPace(sendItem);
+                sendItem.invPos = {
+                    x: parseInt(data.targetCell.getAttribute('data-cell-x')),
+                    y: parseInt(data.targetCell.getAttribute('data-cell-y'))
+                }
+                inventory.items[sendItem.id] = sendItem;
+                data.targetCell.appendChild(sendItem.element);
+
+                stackItem.element.children[0].innerHTML = stackItem.amount;
+                sendItem.element.children[0].innerHTML = sendItem.amount;
+            }
 
             inventory.recalc(true).then(()=>{ inventory.saveInventory(); });
             this.recalc().then(()=>{ this.saveInventory(); });
@@ -248,12 +300,19 @@ export class Inventory implements AfterViewInit{
             // clear all inventory cells of filled attribute
             this.cells.forEach((cell: HTMLElement)=>{ cell.removeAttribute('filled'); });
             Object.keys(this.items).forEach((key, index)=>{
+
                 let item = this.items[key];
+                
                 if(events){
                     // re assign new event listeners for new inventory
                     item.element.ondragstart = (ev: DragEvent)=>{this.onDrag(ev, this);}
                     item.element.ondrop = (ev: DragEvent)=>{this.onDrop(ev, this);}
                     item.element.ondragend = (ev: DragEvent)=>{this.onDragEnd(ev, this);}
+                    item.element.ondragover = (ev: DragEvent)=>{this.onDragOver(ev, this)}
+                }
+
+                if(item.stackable){
+                    
                 }
                 
                 if(!item.picked){
