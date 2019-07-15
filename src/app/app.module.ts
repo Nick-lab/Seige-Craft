@@ -10,19 +10,17 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 
 import { GamePage } from '../pages/home/game/game';
-
 import { ColorPickerPage } from '../popover/color-picker/color-picker';
-import { Inventory } from '../components/inventory/inventory';
-
 import { ElectronProvider } from '../providers/electron/electron';
 import { HttpClientModule } from '@angular/common/http';
 import { DataManager } from '../providers/DataManager';
 import { Map } from '../providers/map';
-import { Inventories } from '../providers/Inventories';
-import { InventoryWindow } from '../components/inventory-window/inv_window';
-import { StashPage } from '../pages/home/stash/stash';
 
-console.log(DataManager);
+import { Inventories } from '../providers/Inventories';
+import { Inventory } from '../components/inventory/inventory';
+import { InventoryWindow } from '../components/inventory-window/inv_window';
+
+import { StashPage } from '../pages/home/stash/stash';
 
 var config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 @NgModule({

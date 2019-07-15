@@ -15,9 +15,6 @@
     "electron-build": "ionic build && electron .",
     "watch": "ionic build"
   },
-  "config": {
-    "ionic_webpack": "./webpack.config.js"
-  },
   "dependencies": {
     "@angular/animations": "5.2.10",
     "@angular/common": "5.2.10",
@@ -46,11 +43,13 @@
     "zone.js": "0.8.26"
   },
   "devDependencies": {
+    "@azerion/phaser-spine": "^3.0.9",
     "@ionic/app-scripts": "3.1.9",
     "electron": "^2.0.2",
     "electron-packager": "^12.1.0",
     "expose-loader": "^0.7.5",
-    "typescript": "~2.6.2",
+    "phaser": "^3.18.0",
+    "typescript": "^2.9.2",
     "webpack-merge": "^4.1.4"
   },
   "description": "An Ionic project"

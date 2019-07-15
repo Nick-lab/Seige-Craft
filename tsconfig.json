@@ -5,7 +5,9 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "lib": [
-      "dom",
+      "es5", 
+      "dom", 
+      "scripthost",
       "es2015"
     ],
     "module": "es2015",
