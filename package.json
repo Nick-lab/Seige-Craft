@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@azerion/phaser-spine": "^3.0.9",
-    "@ionic/app-scripts": "3.1.9",
+    "@ionic/app-scripts": "^3.2.4",
     "electron": "^2.0.2",
     "electron-packager": "^12.1.0",
     "expose-loader": "^0.7.5",
