@@ -23,8 +23,6 @@ export class GamePage implements AfterViewInit{
   }
 
   ngAfterViewInit() {
-    const DEFAULT_WIDTH: number = 1280;
-    const DEFAULT_HEIGHT: number = 720;
 
     var config: Phaser.Types.Core.GameConfig = {
       type: Phaser.WEBGL,

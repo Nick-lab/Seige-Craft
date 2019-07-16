@@ -1,62 +1,62 @@
 
 skeleton.png
-size: 256,64
+size: 256,256
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
 Arm
   rotate: false
-  xy: 200, 53
-  size: 16, 5
+  xy: 2, 68
+  size: 64, 64
   orig: 64, 64
-  offset: 34, 46
+  offset: 0, 0
   index: -1
 Body
   rotate: false
-  xy: 168, 34
-  size: 14, 24
+  xy: 182, 140
+  size: 64, 64
   orig: 64, 64
-  offset: 24, 28
+  offset: 0, 0
   index: -1
 Calf
   rotate: false
-  xy: 193, 41
-  size: 5, 17
+  xy: 2, 2
+  size: 64, 64
   orig: 64, 64
-  offset: 32, 2
+  offset: 0, 0
   index: -1
 Foot
   rotate: false
-  xy: 168, 12
-  size: 9, 5
+  xy: 68, 68
+  size: 64, 64
   orig: 64, 64
-  offset: 33, 0
+  offset: 0, 0
   index: -1
 Forearm
   rotate: false
-  xy: 184, 34
-  size: 14, 5
+  xy: 68, 2
+  size: 64, 64
   orig: 64, 64
-  offset: 47, 47
+  offset: 0, 0
   index: -1
 Head
   rotate: false
-  xy: 168, 19
-  size: 12, 13
+  xy: 134, 68
+  size: 64, 64
   orig: 64, 64
-  offset: 26, 51
+  offset: 0, 0
   index: -1
 Leg
   rotate: false
-  xy: 184, 41
-  size: 7, 17
+  xy: 134, 2
+  size: 64, 64
   orig: 64, 64
-  offset: 30, 16
+  offset: 0, 0
   index: -1
 m4a1
   rotate: false
-  xy: 2, 2
-  size: 164, 56
+  xy: 2, 134
+  size: 178, 70
   orig: 178, 70
-  offset: 7, 6
+  offset: 0, 0
   index: -1
