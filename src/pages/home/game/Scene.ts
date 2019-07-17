@@ -6,11 +6,23 @@ export class Test extends Phaser.Scene{
     handBones: any = [];
     arms: any = [];
     facing: any = 1;
-    debug: any = {};
     cursors: any ;
-    backSpeed = 5;
-    speed = 8.5;
+    backSpeed = 3;
+    speed = 5;
     phase = '';
+    GRAVITY = 6;
+
+    once = true;
+
+    gun: any = {
+        bullet_speed: 200,
+        rotation: 0,
+        muzzle: {
+            x: 0,
+            y: 0
+        }
+    }
+
     preload() {
         this.load.image('player', 'assets/game_assets/characters/skeleton.png');
         this.load.setPath('assets/game_assets/characters');
@@ -35,13 +47,14 @@ export class Test extends Phaser.Scene{
 
         this.cameras.main.setBounds(0, 0, 1024, 2048);
 
-        this.cameras.main.startFollow(this.player, true, 0.09, 0.09, 0 , 50);
+        this.cameras.main.startFollow(this.player, true, 0.09, 0.09, 0 , -50);
         // this.cameras.main.roundPixels = true;
 
         this.cameras.main.setZoom(2);
     }
 
     update(time, delta) {
+        this.graphics.clear()
         let deltaTime = delta / 100;
         if(this.cursors.left.isDown){
             let nSpeed = this.facing > 0 ? this.backSpeed : this.speed;
@@ -70,6 +83,7 @@ export class Test extends Phaser.Scene{
             }
         }
         this.updateHands();
+        this.drawTrajectory(this.gun.muzzle);
     }
 
     resize() {
@@ -92,7 +106,7 @@ export class Test extends Phaser.Scene{
         
         let deltaX = mousePos.x - this.player.x ;
         let deltaY = (this.player.y - 45) - mousePos.y;
-        let radians = Math.atan2(deltaY, deltaX);
+        let radians= this.gun.rotation = Math.atan2(deltaY, deltaX);
         let degrees = (radians * 180 / Math.PI);
         let gunAngle = this.facing < 0 ? -(degrees) + 180 : degrees;
 
@@ -108,6 +122,11 @@ export class Test extends Phaser.Scene{
             x: Math.cos((degrees + (this.facing < 0 ? 3 : -3)) * Math.PI / 180) * 25,
             y: Math.sin((degrees + (this.facing < 0 ? 3 : -3)) * Math.PI / 180) * 25 + 45,
         }
+        this.gun.muzzle = {
+            x: (Math.cos(degrees * Math.PI / 180) * 40) + this.player.x,
+            y: -(Math.sin(degrees * Math.PI / 180) * 40 + 45) + this.player.y,
+        }
+        
         this.handBones[0].worldX = leftHandPos.x;
         this.handBones[0].worldY = leftHandPos.y;
         this.handBones[1].worldX = rightHandPos.x;
@@ -117,6 +136,29 @@ export class Test extends Phaser.Scene{
         this.hands.updateWorldTransformWith(0, 0, gunAngle - 90, 1, 1, 0, 0);
         this.hands.worldX = gunPos.x;
         this.hands.worldY = gunPos.y;
+    }
+
+    drawTrajectory(muzzle = {x: 0, y: 0}) {
+        var correctionFactor = 0.99;
+        var theta = this.gun.rotation;
+        var x = 0, y = 0;
+        let points = [];
+
+        this.graphics.lineStyle(.5, 0xFF0000);
+        this.graphics.moveTo(muzzle.x, muzzle.y);
+
+        for(var t = 0; t < 10; t += 0.1) {
+            x = this.gun.bullet_speed * t * Math.cos(theta) * correctionFactor;
+            y = this.gun.bullet_speed * t * Math.sin(theta) * correctionFactor - 0.5 * this.GRAVITY * t * t;
+            let point = {
+                x: x + muzzle.x, 
+                y: muzzle.y - y
+            }
+            points.push(point);
+            this.graphics.lineTo(point.x, point.y);
+            if (y > 300) break;
+        }
+        this.graphics.strokePath();
     }
     
 }
