@@ -12,14 +12,14 @@ import { Test } from './Scene';
 export class GamePage implements AfterViewInit{
   @ViewChild('gameContainer') container: any;
   inventory = false;
-  game;
+  game: Phaser.Game;
   menuOpen = false;
   view = this;
   
   constructor(private inventories: Inventories) {}
   
   ionViewWillLeave(){
-    console.log('leaving');
+    this.game.destroy(true);
   }
 
   ngAfterViewInit() {
