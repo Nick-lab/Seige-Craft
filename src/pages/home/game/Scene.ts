@@ -19,6 +19,9 @@ export class Test extends Phaser.Scene{
 
     gun: any = {
         bullet_speed: 300,
+        rpm: 300,
+        mode: 'semi',
+        select: ['semi','auto'],
         rotation: 0,
         muzzle: {
             x: 0,
@@ -36,6 +39,7 @@ export class Test extends Phaser.Scene{
     create() {
         this.graphics = this.add.graphics();
         this.add.image(0, 0, 'grid').setOrigin(0).setAlpha(0.5);
+
         this.player = (<any>this.add).spine(200, 200, 'player', 'Idle', true);
         this.hands = this.player.findBone('Hands');
         this.handBones.push(this.player.findBone('Left Arm'))
@@ -83,13 +87,12 @@ export class Test extends Phaser.Scene{
 
         console.log(this.cursors, this.player);
 
-        this.cameras.main.setBounds(0, 0, 1024, 2048);
+        this.cameras.main.setBounds(0, 0, 1920, 1920);
 
         this.cameras.main.startFollow(this.player, true, 0.09, 0.09, 0 , 60);
         // this.cameras.main.roundPixels = true;
 
         this.cameras.main.setZoom(1);
-
         console.log(this.input.activePointer);
     }
 

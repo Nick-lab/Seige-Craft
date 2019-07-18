@@ -23,14 +23,15 @@ export class GamePage implements AfterViewInit{
   }
 
   ngAfterViewInit() {
-
+    
     var config: Phaser.Types.Core.GameConfig = {
       type: Phaser.WEBGL,
       backgroundColor: '#ffffff',
       parent: this.container.nativeElement,
+      
       scale: {
         // The game will be scaled manually in the resize()
-        mode: Phaser.Scale.RESIZE,
+        mode: Phaser.Scale.ZOOM_4X,
         width: "100%",
         height: "100%"
       },
