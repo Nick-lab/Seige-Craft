@@ -1,5 +1,5 @@
 {
-"skeleton": { "hash": "LNbIxtfWb8DEIwgL7S8ZOcS9Hq4", "spine": "3.6.53", "width": 49.26, "height": 62.49, "images": "" },
+"skeleton": { "hash": "X5+p/acaxxAVWoazSW2xspjPxd8", "spine": "3.6.53", "width": 49.26, "height": 62.49, "images": "../../Desktop/Character/" },
 "bones": [
 	{ "name": "root", "x": -0.19, "y": 0.66 },
 	{ "name": "Body", "parent": "root", "rotation": 88.27, "x": -0.32, "y": 28.53 },
@@ -35,7 +35,7 @@
 	{ "name": "Leg2", "bone": "root", "attachment": "Leg" },
 	{ "name": "Foot2", "bone": "root", "attachment": "Foot" },
 	{ "name": "Head", "bone": "root", "attachment": "Head" },
-	{ "name": "m4a1", "bone": "root", "attachment": "m4a1" },
+	{ "name": "Gun", "bone": "Hands", "attachment": "mp5" },
 	{ "name": "Forearm2", "bone": "root", "attachment": "Forearm" },
 	{ "name": "Arm2", "bone": "root", "attachment": "Arm" }
 ],
@@ -189,6 +189,38 @@
 				"height": 64
 			}
 		},
+		"Gun": {
+			"m4a1": {
+				"type": "mesh",
+				"uvs": [ 1, 1, 0, 1, 0, 0, 1, 0 ],
+				"triangles": [ 1, 2, 3, 1, 3, 0 ],
+				"vertices": [ 1, 2, 29.46, -9.87, 1, 1, 2, -12.42, -11.58, 1, 1, 2, -13.09, 4.89, 1, 1, 2, 28.79, 6.6, 1 ],
+				"hull": 4,
+				"edges": [ 0, 2, 2, 4, 4, 6, 0, 6 ],
+				"width": 178,
+				"height": 70
+			},
+			"mp5": {
+				"type": "mesh",
+				"uvs": [ 1, 1, 0, 1, 0, 0, 1, 0 ],
+				"triangles": [ 1, 2, 3, 1, 3, 0 ],
+				"vertices": [ 17.13, -9.24, -12.55, -10.29, -13.05, 3.91, 16.63, 4.96 ],
+				"hull": 4,
+				"edges": [ 0, 2, 2, 4, 4, 6, 0, 6 ],
+				"width": 140,
+				"height": 67
+			},
+			"sks": {
+				"type": "mesh",
+				"uvs": [ 1, 1, 0, 1, 0, 0, 1, 0 ],
+				"triangles": [ 1, 2, 3, 1, 3, 0 ],
+				"vertices": [ 37.92, -3.13, -13.02, -5.27, -13.44, 4.74, 37.5, 6.87 ],
+				"hull": 4,
+				"edges": [ 0, 2, 2, 4, 4, 6, 0, 6 ],
+				"width": 275,
+				"height": 54
+			}
+		},
 		"Head": {
 			"Head": {
 				"type": "mesh",
@@ -223,18 +255,6 @@
 				"edges": [ 0, 2, 2, 4, 4, 6, 6, 8, 8, 10, 10, 12, 12, 14, 0, 14 ],
 				"width": 64,
 				"height": 64
-			}
-		},
-		"m4a1": {
-			"m4a1": {
-				"type": "mesh",
-				"uvs": [ 1, 1, 0, 1, 0, 0, 1, 0 ],
-				"triangles": [ 1, 2, 3, 1, 3, 0 ],
-				"vertices": [ 1, 2, 29.46, -9.87, 1, 1, 2, -12.42, -11.58, 1, 1, 2, -13.09, 4.89, 1, 1, 2, 28.79, 6.6, 1 ],
-				"hull": 4,
-				"edges": [ 0, 2, 2, 4, 4, 6, 0, 6 ],
-				"width": 178,
-				"height": 70
 			}
 		}
 	}

@@ -3,7 +3,7 @@ import { Inventories } from '../../../providers/Inventories';
 import * as Phaser from 'phaser';
 import SpineWebGLPlugin from '../../../assets/spine/SpineWebGLPlugin';
 
-import { Test } from './Scene';
+import { Scene } from './Scene';
 
 @Component({
   selector: 'game-page',
@@ -28,7 +28,6 @@ export class GamePage implements AfterViewInit{
       type: Phaser.WEBGL,
       backgroundColor: '#ffffff',
       parent: this.container.nativeElement,
-      
       scale: {
         // The game will be scaled manually in the resize()
         mode: Phaser.Scale.ZOOM_4X,
@@ -38,7 +37,12 @@ export class GamePage implements AfterViewInit{
       plugins: {
         scene: [{ key: 'SpineWebGLPlugin', plugin: SpineWebGLPlugin, start: true, sceneKey: 'spine' }]
       },
-      scene: [Test],
+      scene: [Scene],
+      render: {
+        pixelArt: true,
+        roundPixels: true,
+        antialias: false
+      },
       physics: {
         default: 'arcade',
         arcade: {
