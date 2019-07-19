@@ -1,5 +1,5 @@
-import { guns } from './Guns';
 import * as Phaser from 'phaser';
+import { Guns } from './Guns';
 export class Player {
     spine: any;
     hands: any;
@@ -14,110 +14,16 @@ export class Player {
     shoulder_pos = 45;
     crouching: boolean = false;
     running: boolean = false;
-    
-    
-    guns = {
-        m4a1: {
-            name: 'm4a1',
-            bullet_speed: 300,
-            rpm: 600,
-            mode: 'auto',
-            select: ['semi','auto'],
-            sound: 'rifle',
-            recoilAngle: 0,
-            maxRecoil: 10,
-            shootDelay: 0,
-            rotation: 0,
-            canShoot: true,
-            display: {
-                left:{
-                    deg: 25,
-                    dist: 0
-                },
-                right: {
-                    deg: 3,
-                    dist: 10
-                },
-                muzzle: {
-                    deg: 0,
-                    dist: 30
-                }
-            },
-            muzzle: {
-                x: 0,
-                y: 0
-            }
-        },
-        mp5: {
-            name: 'mp5',
-            bullet_speed: 270,
-            rpm: 900,
-            mode: 'auto',
-            select: ['semi','auto', 'burst'],
-            sound: 'pistol',
-            recoilAngle: 0,
-            maxRecoil: 20,
-            shootDelay: 0,
-            rotation: 0,
-            canShoot: true,
-            display: {
-                left:{
-                    deg: 20,
-                    dist: 0
-                },
-                right: {
-                    deg: 3,
-                    dist: 5
-                },
-                muzzle: {
-                    deg: 0,
-                    dist: 17
-                }
-            },
-            muzzle: {
-                x: 0,
-                y: 0
-            }
-        },
-        sks: {
-            name: 'sks',
-            bullet_speed: 500,
-            rpm: 60,
-            mode: 'semi',
-            select: ['semi'],
-            sound: 'rifle',
-            recoilAngle: 0,
-            maxRecoil: 40,
-            shootDelay: 0,
-            rotation: 0,
-            canShoot: true,
-            display: {
-                left:{
-                    deg: 5,
-                    dist: 0
-                },
-                right: {
-                    deg: 3,
-                    dist: 10
-                },
-                muzzle: {
-                    deg: 2,
-                    dist: 35
-                }
-            },
-            muzzle: {
-                x: 0,
-                y: 0
-            }
-        }
-    };
-    
-    
+    recoilAngle: number = 0;
     gun: any;
-
+    animating: boolean = false;
     isPlayer = false;
 
     parent: any
+
+    constructor(private guns: Guns) {
+
+    }
 
     init(options){
         Object.keys(options).forEach((key)=>{this[key]=options[key]});
@@ -128,9 +34,11 @@ export class Player {
         this.handBones.push(this.spine.findBone('Right Arm'))
         this.arms.push(this.spine.skeleton.findIkConstraint('Left Arm'))
         this.arms.push(this.spine.skeleton.findIkConstraint('Right Arm'))
-
-        this.gun = this.guns[Object.keys(this.guns)[0]];
-        this.spine.skeleton.setAttachment('Gun', this.gun.name);
+        this.gun = this.guns.getGun('m4a1', true);
+        if(this.gun){
+            this.spine.skeleton.setAttachment('Gun', this.gun.name);
+        }
+        
 
         this.spine.setMix('Walk', 'Idle', 0.4)
         this.spine.setMix('Idle', 'Walk', 0.3)
@@ -161,8 +69,9 @@ export class Player {
 
         this.spine.setMix('Crouch', 'Crouch Walk Back', 0.3)
         this.spine.setMix('Crouch Walk Back', 'Crouch', 0.3)
-
     }
+
+
 
     update(options){
         let delta = 0;
@@ -286,14 +195,14 @@ export class Player {
         this.spine.x += (finalSpeed.x * deltaTime);
         this.spine.y += (finalSpeed.y * deltaTime);
         this.play(animation, true);
-        this.shoot(delta);
-        this.updateHands(mousePos);
+        if(this.gun) this.shoot(delta);
+        if(!this.animating) this.updateHands(mousePos);
     }
 
     shoot(delta){
         let shot = false;
         if(this.gun.mode == 'auto'){
-            if(this.parent.input.activePointer.leftButtonDown() && this.gun.shootDelay <= 0){
+            if(this.parent.input.activePointer.leftButtonDown() && this.gun.shootDelay <= 0 && this.gun.magazine > 0){
                 shot = true;
                 this.gun.shootDelay = 1000 / (this.gun.rpm / 60);
             }
@@ -303,23 +212,24 @@ export class Player {
                 shot = true;
                 this.gun.canShoot = false;
             }
-            if(!this.parent.input.activePointer.leftButtonDown() && !this.gun.canShoot){
+            if(!this.parent.input.activePointer.leftButtonDown() && !this.gun.canShoot && this.gun.magazine > 0){
                 this.gun.canShoot = true;
             }
         }
 
         if(shot){
             // recoil
+            this.gun.magazine --;
             this.parent.addShot(this.drawTrajectory(this.gun.muzzle));
             this.parent.sound.play(this.gun.sound);
             let angle = this.gun.maxRecoil;
             if(this.running) angle *= 1.5;
             else if(this.crouching) angle /= 2;
             
-            this.gun.recoilAngle = (angle - this.gun.recoilAngle) * Math.random();
+            this.recoilAngle = (angle - this.recoilAngle) * Math.random();
         }
-        if(this.gun.recoilAngle > 0){
-            this.gun.recoilAngle = this.lerp(this.gun.recoilAngle, 0, .1)
+        if(this.recoilAngle > 0){
+            this.recoilAngle = this.lerp(this.recoilAngle, 0, .1)
         }
 
         //if(this.shots.length > 15) this.shots.pop();
@@ -332,7 +242,7 @@ export class Player {
     drawTrajectory(muzzle = {x: 0, y: 0}) {
         var correctionFactor = 0.99;
         var theta = this.gun.rotation;
-        theta += this.facing > 0 ? this.gun.recoilAngle * Math.PI / 180 : -(this.gun.recoilAngle * Math.PI / 180);
+        theta += this.facing > 0 ? this.recoilAngle * Math.PI / 180 : -(this.recoilAngle * Math.PI / 180);
         var x = 0, y = 0;
         let points = [];
 
@@ -352,23 +262,16 @@ export class Player {
         return path;
     }
 
-    switchGun(name: boolean | string){
-        if(name){
-            let index = Object.keys(this.guns).indexOf(this.gun.name);
-            if(index > -1){
-                this.gun = this.guns[Object.keys(this.guns)[index]];
-                this.spine.skeleton.setAttachment('Gun', this.gun.name);
-            }
-        }else{
-            let at = Object.keys(this.guns).indexOf(this.gun.name);
-            if(at + 1 >= Object.keys(this.guns).length){
-                at = 0
-            }else{
-                at += 1
-            }
-            this.gun = this.guns[Object.keys(this.guns)[at]];
-            this.spine.skeleton.setAttachment('Gun', this.gun.name);
-        }
+    switchGun(){
+        this.gun = this.guns.getGun(this.gun.name, true);
+        this.spine.skeleton.setAttachment('Gun', this.gun.name);
+    }
+
+    reloadGun(){
+        setTimeout(()=>{
+            // timeout to sim animation playing
+            this.gun.magazine = this.gun.capacity;
+        }, 1000)
     }
 
     play(animation, loop = false){
@@ -392,9 +295,9 @@ export class Player {
         
         let deltaX = mousePos.x - this.spine.x ;
         let deltaY = (this.spine.y - this.shoulder_pos) - mousePos.y;
-        let radians= this.gun.rotation = Math.atan2(deltaY, deltaX);
+        let radians = this.gun.rotation = Math.atan2(deltaY, deltaX);
         let degrees = (radians * 180 / Math.PI);
-        degrees += this.facing > 0 ? this.gun.recoilAngle : -this.gun.recoilAngle;
+        degrees += this.facing > 0 ? this.recoilAngle : -this.recoilAngle;
         let gunAngle = this.facing < 0 ? -(degrees) + 180 : degrees;
         let armDistance = 10;
         let gunPos = {

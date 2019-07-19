@@ -1,13 +1,15 @@
 import * as Phaser from 'phaser';
 import { Player } from './Player';
+import { Guns } from './Guns';
 export class Scene extends Phaser.Scene{
     graphics: Phaser.GameObjects.Graphics;
     cursors: any;
     GRAVITY = 6;
     player: Player;
     shots = [];
-    bullet;
-    
+    bullets;
+    guns: Guns;
+
     preload() {
         this.load.image('player', 'assets/game_assets/characters/skeleton.png');
         this.load.image('grid', 'assets/game_assets/debug-grid-1920x1920.png');
@@ -20,24 +22,32 @@ export class Scene extends Phaser.Scene{
     create() {
         this.graphics = this.add.graphics();
         this.add.image(0, 0, 'grid').setOrigin(0).setAlpha(0.5);
-        this.player = new Player();
-        this.player.init({parent: this });
+        this.guns = new Guns();
+        this.player = new Player(this.guns);
+        this.player.init({parent: this});
         this.cursors = this.input.keyboard.addKeys(
             {up:Phaser.Input.Keyboard.KeyCodes.W,
             down:Phaser.Input.Keyboard.KeyCodes.S,
             left:Phaser.Input.Keyboard.KeyCodes.A,
             right:Phaser.Input.Keyboard.KeyCodes.D,
+            reload_gun: Phaser.Input.Keyboard.KeyCodes.R,
             switch_gun: Phaser.Input.Keyboard.KeyCodes.F,
             crouch:Phaser.Input.Keyboard.KeyCodes.CTRL,
             running:Phaser.Input.Keyboard.KeyCodes.SHIFT
         });
 
+        this.bullets = this.add.group();
+
         this.game.events.addListener('destroy', ()=>{
             this.player.spine.destroy();
         })
 
+        this.cursors.reload_gun.onDown = () => {
+            this.player.reloadGun();
+        }
+
         this.cursors.switch_gun.onDown = () => {
-            this.player.switchGun(false);
+            this.player.switchGun();
         }
 
 
@@ -66,6 +76,8 @@ export class Scene extends Phaser.Scene{
     }
 
     addShot(shot) {
-        this.shots.unshift(shot);
+        this.add.follower(shot, 0,0, follower)
+        let bullet = { follower,  path: shot }
+        this.shots.unshift();
     }
 }
