@@ -1,75 +1,33 @@
 
 skeleton.png
-size: 1024,128
+size: 512,256
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-Arm
+Survivor Sheet
   rotate: false
-  xy: 459, 61
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-Body
-  rotate: false
-  xy: 144, 5
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-Calf
-  rotate: false
-  xy: 525, 61
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-Foot
-  rotate: false
-  xy: 210, 5
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-Forearm
-  rotate: false
-  xy: 591, 61
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-Head
-  rotate: false
-  xy: 657, 61
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-Leg
-  rotate: false
-  xy: 723, 61
-  size: 64, 64
-  orig: 64, 64
+  xy: 2, 58
+  size: 276, 136
+  orig: 276, 136
   offset: 0, 0
   index: -1
 m4a1
   rotate: false
-  xy: 279, 55
+  xy: 280, 124
   size: 178, 70
   orig: 178, 70
   offset: 0, 0
   index: -1
 mp5
   rotate: false
-  xy: 2, 2
+  xy: 280, 55
   size: 140, 67
   orig: 140, 67
   offset: 0, 0
   index: -1
 sks
   rotate: false
-  xy: 2, 71
+  xy: 2, 2
   size: 275, 54
   orig: 275, 54
   offset: 0, 0

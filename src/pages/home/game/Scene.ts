@@ -76,8 +76,6 @@ export class Scene extends Phaser.Scene{
     }
 
     addShot(shot) {
-        this.add.follower(shot, 0,0, follower)
-        let bullet = { follower,  path: shot }
-        this.shots.unshift();
+        this.shots.unshift(shot);
     }
 }
