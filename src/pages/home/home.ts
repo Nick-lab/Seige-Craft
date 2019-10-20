@@ -37,7 +37,7 @@ export class HomePage{
   
   ionViewDidEnter() {
     //this.socket.connect();
-    this.events.publish('window:title', { title: 'SVG Animate' });
+    this.events.publish('window:title', { title: 'Seige Escape' });
   }
 }
 

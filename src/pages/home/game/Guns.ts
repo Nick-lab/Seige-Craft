@@ -1,12 +1,16 @@
+import { getModuleFactory } from "@angular/core";
+
+
 export class Guns {
-    guns = {
-        m4a1: {
+    guns: Gun[] = [
+        {
             name: 'm4a1',
             bullet_speed: 300,
             rpm: 600,
             mode: 'auto',
             select: ['semi','auto'],
             sound: 'rifle',
+            zoom: .4,
             recoilAngle: 0,
             maxRecoil: 10,
             shootDelay: 0,
@@ -21,7 +25,7 @@ export class Guns {
                 },
                 right: {
                     deg: 3,
-                    dist: 10
+                    dist: 13
                 },
                 muzzle: {
                     deg: 0,
@@ -33,13 +37,14 @@ export class Guns {
                 y: 0
             }
         },
-        mp5: {
+        {
             name: 'mp5',
             bullet_speed: 270,
             rpm: 900,
             mode: 'auto',
-            select: ['semi','auto', 'burst'],
+            select: ['semi','auto', 3],
             sound: 'pistol',
+            zoom: .2,
             recoilAngle: 0,
             maxRecoil: 20,
             shootDelay: 0,
@@ -54,7 +59,7 @@ export class Guns {
                 },
                 right: {
                     deg: 3,
-                    dist: 5
+                    dist: 10
                 },
                 muzzle: {
                     deg: 0,
@@ -66,13 +71,14 @@ export class Guns {
                 y: 0
             }
         },
-        sks: {
+        {
             name: 'sks',
             bullet_speed: 500,
             rpm: 60,
             mode: 'semi',
             select: ['semi'],
             sound: 'rifle',
+            zoom: .6,
             recoilAngle: 0,
             maxRecoil: 40,
             shootDelay: 0,
@@ -87,7 +93,7 @@ export class Guns {
                 },
                 right: {
                     deg: 3,
-                    dist: 10
+                    dist: 15
                 },
                 muzzle: {
                     deg: 2,
@@ -99,23 +105,48 @@ export class Guns {
                 y: 0
             }
         }
-    };
+    ];
 
     getGun(name: any, choose = false) {
         this.loadGuns();
-        if(!choose){
-            let index = Object.keys(this.guns).indexOf(name);
-            if(index > -1){
-                return this.guns[Object.keys(this.guns)[index]];
+        if (!choose) {
+            for(let i = 0; i < this.guns.length; i++){
+                let gun = this.guns[i];
+                if( gun.name == name) {
+                    console.log('get exact', gun);
+                    return gun;
+                }
+
+                if( i == this.guns.length -1){
+                    console.log('not found return first', this.guns[0]);
+                    return this.guns[0];
+                }
             }
-        }else{
-            let at = Object.keys(this.guns).indexOf(name);
-            if(at + 1 >= Object.keys(this.guns).length){
-                at = 0
-            }else{
-                at += 1
+            // let index = Object.keys(this.guns).indexOf(name);
+            // if(index > -1){
+            //     return this.guns[Object.keys(this.guns)[index]];
+            // }
+        } else {
+            for(let i = 0; i < this.guns.length; i++){
+                let gun = this.guns[i];
+                if (gun.name == name) {
+                    
+                    if (i + 1 >= this.guns.length) {
+                        console.log('get fist', this.guns[0]);
+                        return this.guns[0];
+                    } else {
+                        console.log('get next', this.guns[i+1]);
+                        return this.guns[i+1];
+                    }
+                }
             }
-            return this.guns[Object.keys(this.guns)[at]];
+            // let at = Object.keys(this.guns).indexOf(name);
+            // if(at + 1 >= Object.keys(this.guns).length){
+            //     at = 0
+            // }else{
+            //     at += 1
+            // }
+            // return this.guns[Object.keys(this.guns)[at]];
         }
     }
 
@@ -123,4 +154,39 @@ export class Guns {
         // load guns from json
     }
     
+}
+
+export interface Gun{
+    name: string;
+    bullet_speed: integer;
+    rpm: number;
+    mode: 'semi' | 'auto' | number,
+    select: ('semi' | 'auto' | number)[],
+    sound: string,
+    zoom: number,
+    recoilAngle: number,
+    maxRecoil: number,
+    shootDelay: number,
+    rotation: number;
+    capacity: number;
+    magazine: number;
+    canShoot: boolean;
+    display: {
+        left:{
+            deg: number;
+            dist: number;
+        },
+        right: {
+            deg: number;
+            dist: number;
+        },
+        muzzle: {
+            deg: number;
+            dist: number;
+        }
+    },
+    muzzle: {
+        x: number;
+        y: number;
+    }
 }

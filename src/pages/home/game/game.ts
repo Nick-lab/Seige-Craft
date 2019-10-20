@@ -1,6 +1,6 @@
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { Inventories } from '../../../providers/Inventories';
-import * as Phaser from 'phaser';
+import Phaser from 'phaser';
 import SpineWebGLPlugin from '../../../assets/spine/SpineWebGLPlugin';
 
 import { Scene } from './Scene';
@@ -19,17 +19,18 @@ export class GamePage implements AfterViewInit{
   constructor(private inventories: Inventories) {}
   
   ionViewWillLeave(){
+    // destroy phaser instance when leaving
     this.game.destroy(true);
   }
 
   ngAfterViewInit() {
-    
+    // setup phaser config
     var config: Phaser.Types.Core.GameConfig = {
       type: Phaser.WEBGL,
       backgroundColor: '#ffffff',
       parent: this.container.nativeElement,
       scale: {
-        // The game will be scaled manually in the resize()
+        // The game will be scaled to fill screen
         mode: Phaser.Scale.ZOOM_4X,
         width: "100%",
         height: "100%"
@@ -50,7 +51,7 @@ export class GamePage implements AfterViewInit{
         }
       }
     };
-
+    // initialize phaser
     this.game = new Phaser.Game(config);
   }
 
