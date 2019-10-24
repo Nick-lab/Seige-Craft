@@ -15,22 +15,18 @@ export class InventoryWindow implements AfterViewInit{
     @Input() id: string = undefined;
     inventoryTitle: string = "";
     offsetAmount = 30;
-    index = 100;
+    index = 0;
     ignoreEvent = false;
 
     constructor(private inventories: Inventories, private events: Events) {
         this.events.subscribe('window-move-back', ()=>{
-            if(!this.ignoreEvent){
-                this.index -= 1;
-            }else{
-                this.ignoreEvent = false;
-            }
-        })
+            this.inventories.windows.forEach((id, i)=>{if(id === this.id) this.index = i});
+        });
+        this.index += this.inventories.windows.length;
     }
 
     ngAfterViewInit() {
         let window = <HTMLElement>this.window.nativeElement;
-        this.index += this.inventories.windows.length;
         window.style.zIndex = this.index.toString();
         window.style.top = this.inventories.windows.length * this.offsetAmount + "px";
         window.style.left = this.inventories.windows.length * this.offsetAmount + "px";
@@ -42,10 +38,11 @@ export class InventoryWindow implements AfterViewInit{
     }
 
     bringToFront() {
-        console.log('bring to from');
-        this.ignoreEvent = true;
-        this.index = 100 + this.inventories.windows.length;
-        this.window.nativeElement.style.zIndex = this.index;
+        console.log('bring to frot');
+        for(let i = 0; i < this.inventories.windows.length; i++) {
+            let id = this.inventories.windows[i];
+            if(id == this.id && i !== this.inventories.windows.length - 1) this.inventories.windows.push(this.inventories.windows.splice(i, 1));
+        }
         this.events.publish('window-move-back');
     }
 

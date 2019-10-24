@@ -24,28 +24,18 @@
                 border-right-width: 2px;
             }
 
-            &[filled="true"]{
-                
+            &.filled{
+                background-color: red;
             }
 
-            .item{
-                background-color: rgba(200, 200, 200, 0.98);
-                position: absolute;
-                background-position: center;
-                background-size: contain;
-                background-repeat: no-repeat;
-                image-rendering: pixelated;
-
-                .stack{
-                    position: absolute;
-                    bottom: 3px;
-                    right: 3px;
-                    color: black;
-                    vertical-align: middle;
-                    font-weight: bold;
-                    font-size: 10px;
-                }
+            &.unplaceable{
+                background-color: rgb(255, 145, 145);
             }
+
+            &.placeable{
+                background-color: rgb(142, 221, 142);
+            }
+
         }
     }
 }

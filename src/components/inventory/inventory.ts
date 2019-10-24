@@ -1,6 +1,6 @@
-import { Component, AfterViewInit, ViewChild, Input } from "@angular/core";
+import { Component, AfterViewInit, ViewChild, Input, ElementRef } from "@angular/core";
 import { Inventories } from "../../providers/Inventories";
-import { Item } from './item';
+import { Item } from "../item/item";
 
 @Component({
     selector: 'inventory',
@@ -11,420 +11,192 @@ export class Inventory implements AfterViewInit{
     @Input() columns: number = 0;
     @Input() rows: number = 0;
     @Input() id: string = undefined;
-    
-    public size = {
-        r: 9,
-        c: 6
-    }
     label = "";
-    cells = [];
-    items = {};
+    cells: any[][] = [];
     filters = [];
-
+    items: Item[] = [];
     constructor(private inventories: Inventories) { }
 
     ngAfterViewInit() {
-        // load passed attributes
-        this.size.r = this.rows;
-        this.size.c = this.columns;
-        if(!this.id) this.id = this.inventories.getId();
-        
         // load inventory
         this.inventories.loadInventory(this.id).then((inventory:any)=>{
-            new Promise((res)=>{
-                // if inventory load items
-                if(inventory){
-                    this.size = inventory.size;
-                    this.label = inventory.label;
-                    if(inventory.filters) this.filters = inventory.filters;
+            // if inventory load items
 
-                    if(inventory.items.length > 0) {
-                        inventory.items.forEach((itemData, key)=>{
-                            let item = new Item();
-                            item.inventories = this.inventories;
-                            item.init(itemData).then((id)=>{
+            if(inventory){
+                this.columns = inventory.size.c;
+                this.rows = inventory.size.r;
+                this.label = inventory.label;
+                
+                if(inventory.filters) this.filters = inventory.filters;
 
-                                // attach event listeners
-                                item.element.ondragstart = (ev: DragEvent)=>{this.onDrag(ev, this);}
-                                item.element.ondrop = (ev: DragEvent)=>{this.onDrop(ev, this);}
-                                item.element.ondragend = (ev: DragEvent)=>{this.onDragEnd(ev, this);}
-                                item.element.ondragover = (ev: DragEvent)=>{this.onDragOver(ev, this)}
-            
-                                this.items[id] = item;
-                                if(inventory.items.length == key + 1) res();
-                            })
-                        })
-                    }else{
-                        res();
-                    }
-                }else{
-                    res();
+                for(let i = 0; i < inventory.items.length; i++) {
+                    let item: Item = inventory.items[i];
+                    if(!item.id) item.id = this.inventories.getId();
+                    this.items.push(item);
                 }
-            }).then(()=>{
-                // set minimum width for div overflow
-                this.invContainer.nativeElement.style.minWidth = (this.getSize(this.size.c) + 19)+ "px";
-
-                let inv = <HTMLElement>this.invContainer.nativeElement.children[0];
-                inv.setAttribute('data-size-y', this.size.r.toString())
-                inv.setAttribute('data-size-x', this.size.c.toString())
-                inv.innerHTML = "";
-                // create row / col elements
-                for(let row = 0; row < this.size.r; row ++){
-                    // create row
-                    let rowEl = document.createElement('div');
-                    rowEl.classList.add('row');
-                    rowEl.classList.add(row == 0 ? 'first' : row == this.size.r - 1 ? 'last' : 'middle')
-                    for(let col = 0; col < this.size.c; col ++){
-                        // create column
-                        let colEl = document.createElement('div');
-                        colEl.setAttribute('data-cell-x', col.toString())
-                        colEl.setAttribute('data-cell-y', row.toString())
-                        colEl.classList.add('cell');
-                        
-                        colEl.ondragover = (ev: DragEvent)=>{this.onDragOver(ev, this)}
-                        
-                        // add cell to tracking array
-                        this.cells.push(colEl);
-                        rowEl.appendChild(colEl);
-                    }
-                    // place row
-                    inv.appendChild(rowEl);
-                }
-                // submit inventory to inventories provider
+                // submit inventory to inventories sefvice for other inventories to access
                 this.inventories.submitInventory(this);
-                this.placeItems();
-            })
+                this.reCalc();
+            }
+           
         })
     }
 
-    onDrag(ev: DragEvent, parent){
-        // starting event listener defines starting info
-        let target = <HTMLElement>ev.toElement;
-        if(target.classList.contains('stack')){
-            target = target.parentElement;
+    onDragOver(ev: DragEvent, x, y){
+        // dragging over inventory slots
+        let targetCell = {
+            x: x - this.inventories.pickedUp.x,
+            y: y - this.inventories.pickedUp.y
         }
-        let item = this.items[target.id];
-        parent.inventories.pickedSize = item.size;
-        parent.inventories.item = item;
-
-        // calculate what cell an item was picked up on
-        parent.inventories.pickedUp = {
-            x: Math.floor(ev.layerX / (parent.getSize(item.size.x) / item.size.x)),
-            y: Math.floor(ev.layerY / (parent.getSize(item.size.y) / item.size.y))
+        let max = {
+            x: targetCell.x + this.inventories.pickedSize.x,
+            y: targetCell.y + this.inventories.pickedSize.y
         }
-        parent.inventories.dragging = target;
-    }
-
-    onDragOver(ev: DragEvent, parent) {
-        /*
-            this event is important it is repetedly fired and defines the target cell to drop item along with target inventory
-        */
-       ev.stopPropagation();
-        let target = <HTMLElement>ev.toElement;
-        parent.inventories.targetIventory = parent.id;
-        if(target.classList.contains('stack')){
-            target = target.parentElement;
-        }
-
-        // setup check variables
-        let place = true;
-        let cellPos = {
-            x: parseInt(target.getAttribute('data-cell-x')),
-            y: parseInt(target.getAttribute('data-cell-y'))
-        }
-        // minimum and maximum x and y cells an item will be placed on
-        let minMax = {
-            x: {
-                min: cellPos.x - parent.inventories.pickedUp.x,
-                max: cellPos.x + ((parent.inventories.pickedSize.x - 1) - parent.inventories.pickedUp.x)
-            },
-            y: {
-                min: cellPos.y - parent.inventories.pickedUp.y,
-                max: cellPos.y + ((parent.inventories.pickedSize.y - 1) - parent.inventories.pickedUp.y)
-            }
-        }
-        parent.inventories.stack = undefined;
-
-        
-        if(target.classList.contains('item') && parent.items[target.id] && parent.inventories.item){
-            if(parent.items[target.id].name == parent.inventories.item.name){
-                
-                // setup stackable
-                parent.inventories.stack = parent.items[target.id];
-                parent.inventories.targetCell = undefined;
-                ev.preventDefault();
-            }
-        }else{
-            // check all the cells an item can be placed on for other items
-            for(let x = 0; x < parent.inventories.pickedSize.x; x ++){
-                for(let y = 0; y < parent.inventories.pickedSize.y; y ++){
-                    let checkPos = {
-                        x: minMax.x.min + x,
-                        y: minMax.y.min + y
-                    }
-                    let cell = parent.cells[parent.getIndex(checkPos, parent.size.c)];
-                    if(cell && cell.getAttribute('filled')){
-                        place = false
+        if (targetCell.x >= 0 && targetCell.y >= 0 && max.x <= this.columns && max.y <= this.rows){
+            let canPlace = true
+            for (let x = 0; x < this.inventories.pickedSize.x; x ++) {
+                for (let y = 0; y < this.inventories.pickedSize.y; y ++) {
+                    if (this.cells[y + targetCell.y][x + targetCell.x]) { 
+                        canPlace = false;
+                        console.log('Cell Filled');
                     }
                 }
             }
-
-            // final check will be replaced with a function for item type filtering
-            if(minMax.x.min >= 0 && minMax.y.min >= 0 && minMax.x.max <= parent.size.c - 1 && minMax.y.max <= parent.size.r - 1 && place && parent.canStore() ){
-                // prevent default allows onDrop event to be fired
-                ev.preventDefault();
-                parent.inventories.targetCell = parent.cells[parent.getIndex({x: minMax.x.min, y: minMax.y.min}, parent.size.c)];
-            }else{
-                parent.inventories.targetCell = undefined;
-            }
-
+            
         }
-
-        // final variable settings
-        if(parent.inventories.dragging){
-            // hide original element because while dragging the item is still technically where it was untill its droped in a new location
-            parent.inventories.dragging.style.display = "none";
-            // picked variable for recalc function to ignore that item allowing the item to be placed on the same cells it left
-            let item = parent.items[parent.inventories.dragging.id];
-            if(item && !item.picked){
-                item.picked = true;
-                parent.recalc();
-            }
-        }
-    }
-
-    onDrop(ev: DragEvent, parent){
-        // for dropping on target cells
-        ev.preventDefault();
-        let event = new Event('dragend');
-        parent.inventories.dragging.dispatchEvent(event);
-    }
-
-    onDragEnd(ev, parent){
-        // for dropping anywhere other than target cells
-
-        let item = parent.items[parent.inventories.dragging.id];
-        item.picked = false;
-        if(parent.inventories.targetCell && !parent.inventories.stack){
-            // update items inventory position and place element in target cell
-            let item = parent.items[parent.inventories.dragging.id];
-            item.picked = false;
-            item.invPos = {
-                x: parseInt(parent.inventories.targetCell.getAttribute('data-cell-x')),
-                y: parseInt(parent.inventories.targetCell.getAttribute('data-cell-y'))
-            }
-            parent.inventories.targetCell.appendChild(parent.inventories.dragging);
-            if(parent.id != parent.inventories.targetIventory){
-                // if target inventory in another inventory send that inventoy the item object
-                parent.sendItem(item);
-                delete parent.items[item.id];
-            }
-        }else{
-            parent.sendStack(item, parent.inventories.stack);
-            delete parent.items[item.id];
-        }
-
-        // recalculate the filled cells, save the inventory and show the element
-        parent.recalc();
-        parent.saveInventory();
-        parent.inventories.dragging.style.display = "unset";
-        parent.inventories.dragging = undefined;
         
+
+        if (canPlace) ev.preventDefault();
     }
 
-    placeItems() {
-        // place loaded items inside inventory
-        Object.keys(this.items).forEach((key)=>{
-            let item = this.items[key];
-            item.parentInventory = this;
-
-            if(item.invPos){
-                this.cells[this.getIndex(item.invPos, this.size.c)].appendChild(item.element);
-            }else{
-                let data:any = this.findSPace(item);
-                item.invPos = {
-                    x: parseInt(data.targetCell.getAttribute('data-cell-x')),
-                    y: parseInt(data.targetCell.getAttribute('data-cell-y'))
-                }
-                data.fillCells.forEach((cell)=>{ cell.setAttribute('filled', 'true'); });
-                data.targetCell.appendChild(item.element);
-            }
-            
-            
-        });
-        this.recalc();
-    }
-
-    sendItem(item) {
-        // send item to another inventory
-        this.inventories.getInventory(this.inventories.targetIventory).then((inventory:any)=>{
-            item.parentInventory = inventory;
-            inventory.items[item.id] = item;
-
-            inventory.recalc(true).then(()=>{ inventory.saveInventory(); });
-            this.recalc().then(()=>{ this.saveInventory(); });
+    onDrop(ev: DragEvent, x, y) {
+        // dropping item on inventory slotxs
+        let item = <Item>JSON.parse(ev.dataTransfer.getData('item'));
+        item.pos = {
+            x: x - this.inventories.pickedUp.x,
+            y: y - this.inventories.pickedUp.y
+        };
+        this.inventories.getInventory(ev.dataTransfer.getData('inventory')).then((inventory: Inventory) => {
+            inventory.removeItem(item.id);
+            this.items.push(item);
+            this.save();
+            if(this.id !== inventory.id) inventory.save();
+            this.reCalc();
         });
     }
 
-    sendStack(sendItem, stackItem) {
-        // send item to stack
-        this.inventories.getInventory(this.inventories.targetIventory).then((inventory:any)=>{
-            let stackTotal = stackItem.stackable;
-            if(sendItem.amount + stackItem.amount <= stackTotal){
-                stackItem.amount += sendItem.amount;
-                sendItem.element.parentNode.removeChild(sendItem.element);
-                stackItem.element.children[0].innerHTML = stackItem.amount;
-            }else{
-                sendItem.amount = (sendItem.amount + stackItem.amount) - stackTotal;
-                stackItem.amount = stackTotal;
-                
-                let data:any = this.findSPace(sendItem);
-                sendItem.invPos = {
-                    x: parseInt(data.targetCell.getAttribute('data-cell-x')),
-                    y: parseInt(data.targetCell.getAttribute('data-cell-y'))
-                }
-                inventory.items[sendItem.id] = sendItem;
-                data.targetCell.appendChild(sendItem.element);
-
-                stackItem.element.children[0].innerHTML = stackItem.amount;
-                sendItem.element.children[0].innerHTML = sendItem.amount;
-            }
-
-            inventory.recalc(true).then(()=>{ inventory.saveInventory(); });
-            this.recalc().then(()=>{ this.saveInventory(); });
-        });
-    }
-
-    recalc(events = false){
-        return new Promise((res)=>{
-            // clear all inventory cells of filled attribute
-            this.cells.forEach((cell: HTMLElement)=>{ cell.removeAttribute('filled'); });
-            Object.keys(this.items).forEach((key, index)=>{
-
-                let item = this.items[key];
-                
-                if(events){
-                    // re assign new event listeners for new inventory
-                    item.element.ondragstart = (ev: DragEvent)=>{this.onDrag(ev, this);}
-                    item.element.ondrop = (ev: DragEvent)=>{this.onDrop(ev, this);}
-                    item.element.ondragend = (ev: DragEvent)=>{this.onDragEnd(ev, this);}
-                    item.element.ondragover = (ev: DragEvent)=>{this.onDragOver(ev, this)}
-                }
-
-                if(item.stackable){
-                    
-                }
-                
-                if(!item.picked){
-                    // if item is not being ignored loop through cells an item is covering and "fill" them
-                    for(let x = 0; x < item.size.x; x++){
-                        for(let y = 0; y < item.size.y; y++){
-                            let cellPos = {
-                                x: x + item.invPos.x, 
-                                y: y + item.invPos.y
-                            };
-                            let cell = this.cells[this.getIndex(cellPos, this.size.c)];
-                            if(cell) cell.setAttribute('filled', 'true');
+    reCalc() {
+        // recalculate the cells of an inventory replace place items and empty cells
+        this.setCells();
+        for(let i = 0; i < this.items.length; i++) {
+            let item = this.items[i];
+            if(item.pos) {
+                for(let x = 1; x > item.size.x; x ++) {
+                    for(let y = 0; y > item.size.y; y ++){
+                        let cellPos = {
+                            x: x + item.pos.x,
+                            y: y + item.pos.y
                         }
+                        console.log(cellPos)
+                        this.cells[cellPos.y][cellPos.x] = 'filled';
                     }
                 }
-                if(Object.keys(this.items).length == index + 1) res();
-            });
-
-        });
-    }
-
-    canStore() {
-        let ret = true;
-        let item = this.inventories.item;
-        if(item.id == this.id){
-            ret = false
-        }
-
-        if(this.filters.length > 0 && this.filters.indexOf(item.type) < 0){
-            ret = false
-        }
-        
-        return ret;
-    }
-
-    saveInventory() {
-        new Promise((res)=>{
-            // setup temporary object
-            let tmp = {
-                label: this.label,
-                size: this.size,
-                items: [],
-            }
-            // grab saveable item objects
-            if(Object.keys(this.items).length > 0){
-                Object.keys(this.items).forEach((key, index)=>{
-                    tmp.items.push(this.items[key].save());
-                    if(Object.keys(this.items).length == index + 1){
-                        res(tmp)
+                this.cells[item.pos.y][item.pos.x] = item;
+                
+            } else {
+                let space: any = this.findSPace(item);
+                console.log(item, space);
+                if(space) {
+                    let [c,r] = this.getXY(space.targetCell);
+                    item.pos = {x: c, y: r};
+                    this.cells[r][c] = item;
+                    for(let c = 1; c < space.fillCells.length; c ++){
+                        let [x, y] = this.getXY(space.fillCells[c]);
+                        this.cells[y][x] = 'filled';
                     }
-                })
-            }else{
-                res();
+                }
             }
-
-        }).then((inventory)=>{
-            // send to inventories provider to handle local or server save
-            this.inventories.saveInventory(inventory, this.id);
-        })
-        
+        }
     }
+    
 
     findSPace(item) {
-        if(this.cells.length > 0){
-            for(let i = 0; i < this.cells.length; i ++){
-                let cell = this.cells[i];
-                let canPlace = true;
-                let placeCells = [];
-
-                let invPos = {
-                    x: parseInt(cell.getAttribute('data-cell-x')),
-                    y: parseInt(cell.getAttribute('data-cell-y'))
-                }
-
-                for(let x = 0; x < item.size.x; x++){
-                    for(let y = 0; y < item.size.y; y++){
-                        let cellPos = {
-                            x: x + invPos.x, 
-                            y: y + invPos.y
-                        };
-                        let cell = this.cells[this.getIndex(cellPos, this.size.c)];
-                        if(cell && cell.getAttribute('filled')) {
-                            canPlace = false;
-                            break;
-                        }
-                        if(cellPos.x > this.size.c - 1 || cellPos.y > this.size.r + 1 ){
-                            canPlace = false;
-                            break;
-                        }
-                        placeCells.push(cell);
-                    }
-                    if(!canPlace) break;
-                }
-
-                if(canPlace){
-                    return {targetCell: cell, fillCells: placeCells};
-                }
-
-                if(i == this.cells.length - 1){
-                    return false;
-                }
+        for(let i = 0; i < this.rows * this.columns; i ++){
+            let cell = i;
+            let placeCells = [];
+            let canPlace = true;
+            
+            let invPos = {
+                x: i % this.columns,
+                y: Math.floor(i / this.columns)
             }
-        }else{
-            return false;
+            
+            for(let x = 0; x < item.size.x; x++){
+
+                for(let y = 0; y < item.size.y; y++){
+                    let cellPos = {
+                        x: x + invPos.x, 
+                        y: y + invPos.y
+                    };
+                    if(this.cells[cellPos.y][cellPos.x]) {
+                        canPlace = false;
+                        break;
+                    }
+                    if(canPlace && (cellPos.x > this.columns - 1 || cellPos.y > this.rows - 1)){
+                        canPlace = false;
+                        break;
+                    }
+                    // push index of cell
+                    placeCells.push(this.getIndex(cellPos.x, cellPos.y));
+                    
+                }
+                // move on to next cell
+                if(!canPlace) break;
+            }
+
+            if(canPlace){
+                return {targetCell: cell, fillCells: placeCells};
+            }else if(i == (this.rows * this.columns) - 1){
+                return false;
+            }
         }
     }
 
-    getSize(num){
-        return (30 * num) + (2 * (num - 1)) 
+    removeItem(id) {
+        for(let i = 0; i < this.items.length; i++){
+            let item = this.items[i];
+            if (item.id === id) {
+                console.log('removed', item.name, 'from', this.id);
+                this.items.splice(i, 1);
+                this.reCalc();
+            }
+        }
     }
 
-    getIndex(pos = {x: 0, y: 0}, width){
-        return pos.x + width * pos.y;
+    getIndex(x,y) {
+        return x + this.columns * y;
+    }
+
+    getXY(index) {
+        return [index % this.columns, Math.floor(index / this.columns)];
+    }
+
+    setCells() {
+        this.cells = Array(this.rows).fill(0).map(x => Array(this.columns).fill(0));
+    }
+
+    getArray(n: number) {
+        return Array(n);
+    }
+
+    save() {
+        this.inventories.saveInventory({
+            label: this.label,
+            size: {
+                c: this.columns,
+                r: this.rows
+            },
+            items: this.items
+        }, this.id);
     }
 }

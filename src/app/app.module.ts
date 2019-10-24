@@ -19,6 +19,7 @@ import { Map } from '../providers/map';
 import { Inventories } from '../providers/Inventories';
 import { Inventory } from '../components/inventory/inventory';
 import { InventoryWindow } from '../components/inventory-window/inv_window';
+import { Item } from '../components/item/item';
 
 import { StashPage } from '../pages/home/stash/stash';
 
@@ -31,7 +32,8 @@ var config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     StashPage,
     ColorPickerPage,
     Inventory,
-    InventoryWindow
+    InventoryWindow,
+    Item
   ],
   imports: [
     BrowserModule,
@@ -48,7 +50,8 @@ var config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
     StashPage,
     ColorPickerPage,
     Inventory,
-    InventoryWindow
+    InventoryWindow,
+    Item
   ],
   providers: [
     StatusBar,

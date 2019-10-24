@@ -1,16 +1,14 @@
 import { Injectable } from "@angular/core";
+import { Item } from "ionic-angular";
 
 @Injectable()
 export class Inventories {
     private list: any = {};
-    public targetIventory: String = undefined;
 
     public windows = [];
+    public indexs = [];
 
-    dragging: HTMLElement = undefined;
-    targetCell: HTMLElement = undefined;
-    item: any = undefined;
-    stack: any = undefined;
+    item: Item;
     pickedUp = {x: 0,y: 0};
     pickedSize = {x: 0,y: 0};
 
@@ -91,6 +89,48 @@ export class Inventories {
                     amount: 10,
                     stackable: 60,
                     name: '5.56 Nato',
+                    attributes: {
+                        health: 20,
+                        bleeding: false
+                    },
+                    context: [
+                        {
+                            label: "Use"
+                        }
+                    ],
+                    lore: ''
+                },
+                {
+                    size: {
+                        x: 1,
+                        y: 1
+                    },
+                    type: 'money',
+                    amount: 30000,
+                    stackable: 50000,
+                    name: 'Dollars',
+                    icon: 'assets/game_assets/icons/dollars.png',
+                    attributes: {
+                        health: 20,
+                        bleeding: false
+                    },
+                    context: [
+                        {
+                            label: "Use"
+                        }
+                    ],
+                    lore: ''
+                },
+                {
+                    size: {
+                        x: 1,
+                        y: 1
+                    },
+                    type: 'money',
+                    amount: 40000,
+                    stackable: 50000,
+                    name: 'Dollars',
+                    icon: 'assets/game_assets/icons/dollars.png',
                     attributes: {
                         health: 20,
                         bleeding: false
@@ -199,57 +239,71 @@ export class Inventories {
                 },
                 {
                     size: {
-                        x: 4,
-                        y: 6
-                    },
-                    type: 'bag',
-                    name: 'Scrapper Bag',
-                    icon: 'assets/game_assets/icons/bag.png',
-                    attributes: {
-                        width: 5,
-                        height: 6
-                    },
-                    lore: ''
-                },
-                {
-                    size: {
-                        x: 4,
-                        y: 6
-                    },
-                    type: 'bag',
-                    name: 'Scrapper Bag',
-                    icon: 'assets/game_assets/icons/bag.png',
-                    attributes: {
-                        width: 5,
-                        height: 6
-                    },
-                    lore: ''
-                },
-                {
-                    size: {
-                        x: 4,
-                        y: 6
-                    },
-                    type: 'bag',
-                    name: 'Scrapper Bag',
-                    icon: 'assets/game_assets/icons/bag.png',
-                    attributes: {
-                        width: 5,
-                        height: 6
-                    },
-                    lore: ''
-                },
-                {
-                    size: {
-                        x: 10,
-                        y: 4
+                        x: 5,
+                        y: 3
                     },
                     type: 'case',
-                    name: 'Large Gun Case',
+                    name: 'T H I C C',
+                    icon: 'assets/game_assets/icons/thicc.png',
+                    attributes: {
+                        width: 14,
+                        height: 14
+                    },
+                    lore: ''
+                },
+                {
+                    size: {
+                        x: 4,
+                        y: 6
+                    },
+                    type: 'bag',
+                    name: 'Scrapper Bag',
+                    icon: 'assets/game_assets/icons/bag.png',
+                    attributes: {
+                        width: 5,
+                        height: 6
+                    },
+                    lore: ''
+                },
+                {
+                    size: {
+                        x: 4,
+                        y: 6
+                    },
+                    type: 'bag',
+                    name: 'Scrapper Bag',
+                    icon: 'assets/game_assets/icons/bag.png',
+                    attributes: {
+                        width: 5,
+                        height: 6
+                    },
+                    lore: ''
+                },
+                {
+                    size: {
+                        x: 4,
+                        y: 6
+                    },
+                    type: 'bag',
+                    name: 'Scrapper Bag',
+                    icon: 'assets/game_assets/icons/bag.png',
+                    attributes: {
+                        width: 5,
+                        height: 6
+                    },
+                    lore: ''
+                },
+                {
+                    size: {
+                        x: 5,
+                        y: 2
+                    },
+                    type: 'case',
+                    name: 'Weapon Case',
                     icon: 'assets/game_assets/icons/large_gun_case.png',
                     attributes: {
-                        width: 12,
-                        height: 6,
+                        width: 10,
+                        height: 5,
                         filters: ['gun','magazine','ammo']
                     },
                     lore: ''
@@ -286,6 +340,7 @@ export class Inventories {
     }
 
     public loadInventory(id: string) {
+        // eventaully wil load from local flat file
         return new Promise((res)=>{
             if(this.inventories[id]) res(this.inventories[id]);
             else res(false);
@@ -317,7 +372,11 @@ export class Inventories {
         this.inventories[id] = inventory;
     }
 
+    getSize(num){
+        return (30 * num) + (2 * (num - 1)) 
+    }
+
     getId () {
-        return new Date().getTime().toString(36).substr(2,9);
+        return new Date().getTime().toString(36).substr(2,9)+Math.random() * 99999;
     }
 }

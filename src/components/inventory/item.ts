@@ -14,7 +14,7 @@ export function Item () {
     }
 
     this.createElement = () => {
-        let item = document.createElement('div');
+        let item = this.element = document.createElement('div');
         item.setAttribute('draggable', 'true');
         item.id = this.id;
         item.style.width = this.getSize(this.size.x) + 'px';
@@ -28,7 +28,7 @@ export function Item () {
         if(this.stackable){
             let stack = document.createElement('span');
             stack.classList.add('stack');
-            stack.innerHTML = this.amount;
+            stack.innerHTML = this.getAmount();
             item.appendChild(stack);
         }
 
@@ -63,6 +63,15 @@ export function Item () {
         return tmp;
     }
 
+    this.rotate = () => {
+        this.size = {
+            x: this.size.y,
+            y: this.size.x
+        };
+        this.element.style.width = this.getSize(this.size.x) + 'px';
+        this.element.style.height = this.getSize(this.size.y) + 'px';
+    }
+
     this.getSize = (num) => {
         return (30 * num) + (2 * (num - 1)) 
     }
@@ -84,10 +93,22 @@ export function Item () {
                             // if inventory exists display it
                             if(inventory){
                                 this.inventories.windows.push(this.id);
+                                if(this.inventories.windows.length > 5) {
+                                    this.inventories.closeWindow(this.inventories.windows[0]);
+                                }
                             }else{
                                 // create then display inventory
-                                this.inventories.createInventory({id: this.id, width: this.attributes.width, height: this.attributes.height, filters:  this.attributes.filters ? this.attributes.filters : [], label: this.name}).then((inventory)=>{
+                                this.inventories.createInventory({
+                                    id: this.id, 
+                                    width: this.attributes.width, 
+                                    height: this.attributes.height, 
+                                    filters:  this.attributes.filters ? this.attributes.filters : [], 
+                                    label: this.name
+                                }).then((inventory)=>{
                                     this.inventories.windows.push(this.id);
+                                    if(this.inventories.windows.length > 5) {
+                                        this.inventories.closeWindow(this.inventories.windows[0]);
+                                    }
                                 })
                             }
 
@@ -100,5 +121,21 @@ export function Item () {
         if(this.type == 'ammo') {
 
         }
+
+        else {
+            this.element.onclick = (ev: KeyboardEvent) => {
+                if(ev.shiftKey){
+                    console.log('Send to inventory');
+                }
+            }
+        }
+    }
+
+    this.getAmount = () => {
+        if(this.amount) {
+            if(this.amount > 999){
+                return Math.round(this.amount / 10) / 100 + 'k';
+            } else return this.amount;
+        } else return 0;
     }
 }
