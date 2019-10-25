@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Item } from "ionic-angular";
+import { Item } from "../components/item/item";
 
 @Injectable()
 export class Inventories {
@@ -8,6 +8,7 @@ export class Inventories {
     public windows = [];
     public indexs = [];
 
+    itemAction = '';
     item: Item;
     pickedUp = {x: 0,y: 0};
     pickedSize = {x: 0,y: 0};

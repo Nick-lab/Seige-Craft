@@ -52,19 +52,21 @@ export class Inventory implements AfterViewInit{
             x: targetCell.x + this.inventories.pickedSize.x,
             y: targetCell.y + this.inventories.pickedSize.y
         }
+        let canPlace = true;
         if (targetCell.x >= 0 && targetCell.y >= 0 && max.x <= this.columns && max.y <= this.rows){
-            let canPlace = true
             for (let x = 0; x < this.inventories.pickedSize.x; x ++) {
                 for (let y = 0; y < this.inventories.pickedSize.y; y ++) {
-                    if (this.cells[y + targetCell.y][x + targetCell.x]) { 
+                    let cell = this.cells[y + targetCell.y][x + targetCell.x];
+                    if (cell == 'filled' || (cell.id && cell.id != this.inventories.item.id)) { 
                         canPlace = false;
-                        console.log('Cell Filled');
+                        break;
                     }
                 }
+                if(!canPlace) break;
             }
-            
-        }
+        } else canPlace = false;
         
+
 
         if (canPlace) ev.preventDefault();
     }
@@ -90,22 +92,23 @@ export class Inventory implements AfterViewInit{
         this.setCells();
         for(let i = 0; i < this.items.length; i++) {
             let item = this.items[i];
+            if(!item.id) item.id = this.inventories.getId();
             if(item.pos) {
-                for(let x = 1; x > item.size.x; x ++) {
-                    for(let y = 0; y > item.size.y; y ++){
-                        let cellPos = {
-                            x: x + item.pos.x,
-                            y: y + item.pos.y
+                for(let x = 0; x < item.size.x; x ++) {
+                    for(let y = 0; y < item.size.y; y ++){
+                        if(x > 0 || y > 0){
+                            let cellPos = {
+                                x: x + item.pos.x,
+                                y: y + item.pos.y
+                            }
+                            this.cells[cellPos.y][cellPos.x] = 'filled';
                         }
-                        console.log(cellPos)
-                        this.cells[cellPos.y][cellPos.x] = 'filled';
                     }
                 }
                 this.cells[item.pos.y][item.pos.x] = item;
                 
             } else {
                 let space: any = this.findSPace(item);
-                console.log(item, space);
                 if(space) {
                     let [c,r] = this.getXY(space.targetCell);
                     item.pos = {x: c, y: r};
@@ -118,7 +121,6 @@ export class Inventory implements AfterViewInit{
             }
         }
     }
-    
 
     findSPace(item) {
         for(let i = 0; i < this.rows * this.columns; i ++){
@@ -163,11 +165,12 @@ export class Inventory implements AfterViewInit{
     }
 
     removeItem(id) {
+        console.log(this.items);
         for(let i = 0; i < this.items.length; i++){
             let item = this.items[i];
             if (item.id === id) {
-                console.log('removed', item.name, 'from', this.id);
                 this.items.splice(i, 1);
+                console.log(this.items);
                 this.reCalc();
             }
         }
