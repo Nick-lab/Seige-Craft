@@ -1,6 +1,7 @@
 .inventory-window {
     position: absolute;
     z-index: 9;
+    overflow: hidden;
     background-color: #5e5e5e;
 
     .head-container{

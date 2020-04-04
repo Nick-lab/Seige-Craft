@@ -1,6 +1,6 @@
 import Phaser from 'phaser';
 import { Guns } from './Guns';
-export class Player {
+export class Player{
     spine: any;
     hands: any;
     handBones: any = [];
@@ -23,6 +23,7 @@ export class Player {
         y: 0,
         zoom: 2
     };
+    container;
     // parent object / scene class
     parent: any
     // graphics for drawing debug shapes
@@ -36,8 +37,12 @@ export class Player {
         // initialize player model and starting variables
         Object.keys(options).forEach((key)=>{this[key]=options[key]});
 
-        this.spine = this.parent.add.spine(200, 200, 'player', 'Idle', true);
-        console.log(this.spine);
+        this.spine = this.parent.physics.add.spine(200, 200, 'player', 'Idle', true);
+        // this.spine.drawDebug = true;
+        // this.spine.setSize(100,200);
+        //this.parent.physics.world.enable(this.spine);
+
+        console.log(this.spine, this.parent);
         this.hands = this.spine.findBone('Hands');
         this.handBones.push(this.spine.findBone('Left Arm'))
         this.handBones.push(this.spine.findBone('Right Arm'))
@@ -169,32 +174,32 @@ export class Player {
             finalSpeed.x = -finalSpeed.x;
         }
 
-        // if(cursors.up.isDown){
-        //     if(this.running){
-        //         finalSpeed.y = this.backSpeed * 1.5;
-        //         animation = 'Run';
-        //     }else if(this.crouching){
-        //         finalSpeed.y = this.backSpeed * .75;
-        //         animation = 'Crouch Walk';
-        //     }else{
-        //         finalSpeed.y = this.backSpeed;
-        //         animation = 'Walk';
-        //     }
-        //     finalSpeed.y = -finalSpeed.y
-        // }
+        if(cursors.up.isDown){
+            if(this.running){
+                finalSpeed.y = this.backSpeed * 1.5;
+                animation = 'Run';
+            }else if(this.crouching){
+                finalSpeed.y = this.backSpeed * .75;
+                animation = 'Crouch Walk';
+            }else{
+                finalSpeed.y = this.backSpeed;
+                animation = 'Walk';
+            }
+            finalSpeed.y = -finalSpeed.y
+        }
 
-        // if(cursors.down.isDown){
-        //     if(this.running){
-        //         finalSpeed.y = this.backSpeed * 1.5;
-        //         animation = 'Run';
-        //     }else if(this.crouching){
-        //         finalSpeed.y = this.backSpeed * .75;
-        //         animation = 'Crouch Walk';
-        //     }else{
-        //         finalSpeed.y = this.backSpeed;
-        //         animation = 'Walk';
-        //     }
-        // }
+        if(cursors.down.isDown){
+            if(this.running){
+                finalSpeed.y = this.backSpeed * 1.5;
+                animation = 'Run';
+            }else if(this.crouching){
+                finalSpeed.y = this.backSpeed * .75;
+                animation = 'Crouch Walk';
+            }else{
+                finalSpeed.y = this.backSpeed;
+                animation = 'Walk';
+            }
+        }
 
         if(this.crouching && !cursors.left.isDown && !cursors.right.isDown){
             animation = 'Crouch';

@@ -4,6 +4,7 @@ import Phaser from 'phaser';
 import SpineWebGLPlugin from '../../../assets/spine/SpineWebGLPlugin';
 
 import { Scene } from './Scene';
+import { ElectronProvider } from '../../../providers/electron/electron';
 
 @Component({
   selector: 'game-page',
@@ -16,7 +17,7 @@ export class GamePage implements AfterViewInit{
   menuOpen = false;
   view = this;
   
-  constructor(private inventories: Inventories) {}
+  constructor(private inventories: Inventories, private electron: ElectronProvider) { }
   
   ionViewWillLeave(){
     // destroy phaser instance when leaving
@@ -53,6 +54,16 @@ export class GamePage implements AfterViewInit{
     };
     // initialize phaser
     this.game = new Phaser.Game(config);
+
+    this.electron.setActivity({
+      details: `Debug Developer Level`,
+      state: 'Solo',
+      largeImageKey: 'level-debug',
+      largeImageText: 'Debug Map',
+      smallImageKey: 'seige',
+      smallImageText: 'Project Seige',
+      instance: false,
+    })
   }
 
 }

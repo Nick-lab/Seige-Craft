@@ -3,8 +3,9 @@ import { NavController, Events } from 'ionic-angular';
 
 import { DataManager } from '../../providers/DataManager';
 
-import { GamePage } from './game/game';
+import { LobbyPage } from './lobby/lobby';
 import { StashPage } from './stash/stash';
+import { ElectronProvider } from '../../providers/electron/electron';
 
 @Component({
   selector: 'page-home',
@@ -17,10 +18,9 @@ export class HomePage{
   constructor(
     public events: Events,
     public dataMngr: DataManager,
-    private nav: NavController
-  ){
-    
-  }
+    private nav: NavController,
+    private electron: ElectronProvider
+  ){ }
 
   ionViewDidLoad() {
     this.canvas = <HTMLElement>this.canvas.nativeElement;
@@ -28,7 +28,7 @@ export class HomePage{
   }
   
   onPlay() {
-    this.nav.push(GamePage);
+    this.nav.push(LobbyPage);
   }
 
   onStash() {
@@ -37,7 +37,16 @@ export class HomePage{
   
   ionViewDidEnter() {
     //this.socket.connect();
-    this.events.publish('window:title', { title: 'Seige Escape' });
+    this.events.publish('window:title', { title: 'Project Seige' });
+    this.electron.setActivity({
+      details: `Playing Project Seige`,
+      state: 'home screen',
+      largeImageKey: 'seige-standing',
+      largeImageText: 'Project Seige',
+      smallImageKey: 'seige',
+      smallImageText: 'Project Seige',
+      instance: false,
+    });
   }
 }
 

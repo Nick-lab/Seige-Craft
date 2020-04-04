@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+//import SpinePlugin from 'phaser/plugins/spine/SpineWebGLPlugin';
 import { Player } from './Player';
 import { Guns } from './Guns';
 export class Scene extends Phaser.Scene{
@@ -11,18 +12,32 @@ export class Scene extends Phaser.Scene{
     guns: Guns;
     light: Phaser.GameObjects.Light[] = [];
     preload() {
+        //this.load.scenePlugin({key: 'spine', url: SpinePlugin})
         this.load.image('player', 'assets/game_assets/characters/skeleton.png');
         this.load.image('grid', 'assets/game_assets/debug-grid-1920x1920.png');
         this.load.audio('rifle', 'assets/game_assets/sounds/effects/Rifle.wav');
         this.load.audio('pistol', 'assets/game_assets/sounds/effects/Pistol.wav');
+        this.load.image('tiles', 'assets/game_assets/tiles.png');
+        this.load.tilemapTiledJSON('map', 'assets/game_assets/maps/project_seige_01.json');
         this.load.setPath('assets/game_assets/characters');
         (<any>this.load).spine('player', 'skeleton.json', 'skeleton.atlas');
+        
         
     }
 
     create() {
+        
+        //this.add.image(0, 0, 'grid').setOrigin(0).setAlpha(0.5);
+
+        const map = this.make.tilemap({ key: 'map'});
+        const tileset = map.addTilesetImage('base', 'tiles');
+        const background = map.createStaticLayer('L1 Back', tileset, 0, 0);
         this.graphics = this.add.graphics();
-        this.add.image(0, 0, 'grid').setOrigin(0).setAlpha(0.5);
+        const collision = map.createDynamicLayer('L1 Collision', tileset, 0,0);
+        const foreground = map.createStaticLayer('L1 Foreground', tileset, 0,0);
+        
+        collision.setCollisionByProperty({ collides: true });
+
         this.guns = new Guns();
         this.player = new Player(this.guns);
         this.player.init({parent: this, graphics: this.graphics});
@@ -56,7 +71,7 @@ export class Scene extends Phaser.Scene{
             this.player.switchGun();
         }
 
-        // // zoom camera
+        // zoom camera
         // this.cursors.in.onDown = () => {
         //     let z = -.02;
         //     if(this.cameras.main.zoom + z >= 1){
@@ -73,10 +88,11 @@ export class Scene extends Phaser.Scene{
 
 
         this.cameras.main.zoom = 2;
-        this.cameras.main.setBounds(0, 0, 1920, 1920);
+        //this.cameras.main.setBounds(0, 0, 1920, 1920);
         this.cameras.main.startFollow(this.player.follow, true, 0.09, 0.09, 0, 0);
         this.cameras.main.roundPixels = true;
-        
+        collision.depth = 4;
+        foreground.depth = 5;
     }
 
     update(time, delta) {
@@ -96,7 +112,7 @@ export class Scene extends Phaser.Scene{
             cursors: this.cursors
         });
         // update camera zoom
-        this.cameras.main.zoom = this.player.follow.zoom;
+        // this.cameras.main.zoom = this.player.follow.zoom;
         // set line style for graphics
         this.graphics.lineStyle(1, 0xff0000, 1);
         // draw shots on screen debug purposes

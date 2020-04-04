@@ -13,7 +13,10 @@
     "ionic:serve": "ionic-app-scripts serve",
     "electron": "electron .",
     "electron-build": "ionic build && electron .",
-    "watch": "ionic build"
+    "watch": "ionic build",
+    "start": "ionic build && electron-forge start",
+    "package": "ionic build && electron-forge package",
+    "make": "electron-forge make"
   },
   "dependencies": {
     "@angular/animations": "5.2.10",
@@ -30,6 +33,8 @@
     "@ionic-native/status-bar": "4.7.0",
     "@ionic/storage": "2.1.3",
     "angularfire2": "^5.0.0-rc.10",
+    "discord-rpc": "^3.1.0",
+    "electron-squirrel-startup": "^1.0.0",
     "firebase": "^5.0.4",
     "ionic-angular": "3.9.2",
     "ionicons": "3.0.0",
@@ -43,13 +48,47 @@
   },
   "devDependencies": {
     "@azerion/phaser-spine": "^3.0.9",
+    "@electron-forge/cli": "^6.0.0-beta.45",
+    "@electron-forge/maker-deb": "^6.0.0-beta.45",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.45",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.45",
+    "@electron-forge/maker-zip": "^6.0.0-beta.45",
     "@ionic/app-scripts": "^3.2.4",
     "electron": "^2.0.18",
-    "electron-packager": "^12.1.0",
     "expose-loader": "^0.7.5",
     "phaser": "^3.20.1",
     "typescript": "^2.9.2",
     "webpack-merge": "^4.1.4"
   },
-  "description": "An Ionic project"
+  "description": "An Ionic project",
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "icon": "./src/assets/icon/seige-game-icon.icns"
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "Seige_Craft"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin",
+            "win32"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
+  }
 }

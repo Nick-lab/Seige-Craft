@@ -1,10 +1,23 @@
 import { Component, HostBinding, HostListener, Input, OnInit, ViewChild, ElementRef } from "@angular/core";
+import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Inventories } from "../../providers/Inventories";
 import { Inventory } from "../inventory/inventory";
 
 @Component({
     selector: 'item',
-    templateUrl: 'item.html'
+    templateUrl: 'item.html',
+    animations: [
+        trigger('context', [
+            state('true', style({
+
+            })),
+            state('false', style({
+                height: '0px'
+            })),
+            transition('true => false', animate('100ms ease-in')),
+            transition('false => true', animate('100ms ease-out'))
+        ])
+    ]
 })
 export class Item implements OnInit {
     private inventory: Inventory;
@@ -100,8 +113,8 @@ export class Item implements OnInit {
                     this.item.amount = item.stackable;
                     item = JSON.parse(JSON.stringify(this.item));
                     item.amount = b + a - this.item.stackable;
-                    
-                    // delete dropped item position so new inventory can assign it a spot
+
+                    // delete dropped item position and id so new inventory can assign it a spot
                     delete item.pos;
                     delete item.id;
 
@@ -123,11 +136,21 @@ export class Item implements OnInit {
     @HostListener('contextmenu', ['$event']) onContext(ev: MouseEvent) {
         console.log(ev);
         ev.preventDefault();
-        this.contextPos = {
-            x: ev.offsetX,
-            y: ev.offsetY,
-        }
         this.contextOpen = true;
+        let target: HTMLElement = <HTMLElement>ev.target;
+        if(target.nodeName != "ITEM") target = target.parentElement;
+
+        //setTimeout(()=>{
+            target = <HTMLElement>target.lastElementChild;
+            console.log(target);
+            console.log(ev.clientX, target.clientWidth, ev.clientX + target.clientWidth, window.innerWidth)
+            this.contextPos = {
+                x: ev.clientX + target.clientWidth + 10 > window.innerWidth ? ev.offsetX - target.clientWidth + 2 : ev.offsetX - 2,
+                y: ev.offsetY - 2,
+            }
+
+        //},1)
+        
     }
 
     onCloseContext(ev: MouseEvent) {

@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ViewChild, Input, ElementRef } from "@angular/core";
+import { Component, AfterViewInit, ViewChild, Input, Output, EventEmitter } from "@angular/core";
 import { Inventories } from "../../providers/Inventories";
 import { Item } from "../item/item";
 
@@ -8,6 +8,7 @@ import { Item } from "../item/item";
 })
 export class Inventory implements AfterViewInit{
     @ViewChild('invContainer') invContainer: any;
+    @Output('inventoryWidth') width = new EventEmitter()
     @Input() columns: number = 0;
     @Input() rows: number = 0;
     @Input() id: string = undefined;
@@ -26,7 +27,7 @@ export class Inventory implements AfterViewInit{
                 this.columns = inventory.size.c;
                 this.rows = inventory.size.r;
                 this.label = inventory.label;
-                
+                this.width.emit((this.inventories.getSize(this.columns) + 18).toString());
                 if(inventory.filters) this.filters = inventory.filters;
 
                 for(let i = 0; i < inventory.items.length; i++) {

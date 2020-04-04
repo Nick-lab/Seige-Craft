@@ -22,12 +22,14 @@ import { InventoryWindow } from '../components/inventory-window/inv_window';
 import { Item } from '../components/item/item';
 
 import { StashPage } from '../pages/home/stash/stash';
+import { LobbyPage } from '../pages/home/lobby/lobby';
 
 var config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
+    LobbyPage,
     GamePage,
     StashPage,
     ColorPickerPage,
@@ -46,6 +48,7 @@ var config: SocketIoConfig = { url: 'http://localhost:3000', options: {} };
   entryComponents: [
     MyApp,
     HomePage,
+    LobbyPage,
     GamePage,
     StashPage,
     ColorPickerPage,

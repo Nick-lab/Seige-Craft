@@ -51,6 +51,10 @@ export class ElectronProvider {
     }
   }
 
+  setActivity(activity: Activity) {
+    this.ipc.send('discord-status', activity);
+  }
+
   localSave(file, data){
     this.ipc.send('local-store', {file, data });
     this.ipc.once('local-store-reply', (e,reply)=>{
@@ -66,3 +70,17 @@ export class ElectronProvider {
   }
 
 }
+
+export interface Activity {
+  details: string;
+  state: string;
+  largeImageKey?: 'seige' | 'seige-standing' | 'level-debug';
+  largeImageText?: string;
+  smallImageKey?: 'seige' | 'seige-standing';
+  smallImageText: string;
+  partyId?: string;
+  partySize?: number;
+  partyMax?: number;
+  joinSecret?: string;
+  instance: boolean;
+} 

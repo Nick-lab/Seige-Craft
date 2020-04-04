@@ -1,9 +1,26 @@
-const { app, BrowserWindow, ipcMain } = require('electron')
+const { app, BrowserWindow, ipcMain } = require('electron');
+const DiscordRPC = require('discord-rpc');
 const fs = require('fs');
+const clientId = '639086634125754368';
 
 let localStorage = __dirname +'/storage/';
 let win;
 let windows = [];
+
+DiscordRPC.register(clientId);
+
+var activity = {
+  details: `booped times`,
+  state: 'in slither party',
+  startTimestamp: new Date(),
+  largeImageKey: 'snek_large',
+  largeImageText: 'tea is delicious',
+  smallImageKey: 'snek_small',
+  smallImageText: 'i am my own pillows',
+  instance: false,
+};
+const rpc = new DiscordRPC.Client({transport: 'ipc'});
+const startTimestamp = new Date();
 
 function createWindow() {
   // Create the browser window.
@@ -71,6 +88,15 @@ ipcMain.on('open-window', (e, data) => {
   windows.push(win);
 });
 
+ipcMain.on('discord-status', (e, obj) => {
+  if(!obj.partyId || !obj.partySize || !obj.partyMax){
+    delete activity.partyId;
+    delete activity.partySize;
+    delete activity.partyMax;
+  }
+  activity = Object.assign(activity, obj);
+  rpc.setActivity(activity);
+})
 
 ipcMain.on('local-store', (e, obj) => {
   let fullFile = localStorage + obj.file;
@@ -142,3 +168,18 @@ app.on('activate', function () {
     createWindow()
   }
 })
+
+rpc.on('ready', () => {
+  console.log('rpc ready');
+  console.log(rpc);
+  rpc.setActivity(activity);
+
+  // activity can only be set every 15 seconds
+  setInterval(() => {
+    rpc.setActivity(activity);
+  }, 15e3);
+})
+
+
+
+rpc.login({ clientId }).catch(console.error);

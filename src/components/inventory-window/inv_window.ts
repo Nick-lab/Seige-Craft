@@ -1,4 +1,5 @@
 import { Component, AfterViewInit, ViewChild, Input } from "@angular/core";
+import { trigger, state, style, animate, transition } from '@angular/animations';
 import { Events } from 'ionic-angular';
 import { Inventory } from "../inventory/inventory";
 import { Inventories } from "../../providers/Inventories";
@@ -6,7 +7,20 @@ import { Inventories } from "../../providers/Inventories";
 
 @Component({
     selector: 'inventory-window',
-    templateUrl: 'inv_window.html'
+    templateUrl: 'inv_window.html',
+    // animations: [
+    //     trigger('window', [
+    //         state('true', style({
+    //             opacity: '1'
+    //         })),
+    //         state('false', style({
+    //             opacity: '0',
+    //             height: '0px'
+    //         })),
+    //         transition('true => false', animate('100ms ease-in')),
+    //         transition('false => true', animate('100ms ease-out'))
+    //     ])
+    // ]
 })
 export class InventoryWindow implements AfterViewInit{
     @ViewChild('invWindow') window: any;
@@ -16,7 +30,8 @@ export class InventoryWindow implements AfterViewInit{
     inventoryTitle: string = "";
     offsetAmount = 30;
     index = 0;
-    ignoreEvent = false;
+    open = false;
+    width;
 
     constructor(private inventories: Inventories, private events: Events) {
         this.events.subscribe('window-move-back', ()=>{
@@ -31,14 +46,22 @@ export class InventoryWindow implements AfterViewInit{
         window.style.top = this.inventories.windows.length * this.offsetAmount + "px";
         window.style.left = this.inventories.windows.length * this.offsetAmount + "px";
         this.dragElement(this.header.nativeElement, this.window.nativeElement, this);
+        this.open = true;
+    }
+
+    setWidth(ev) {
+        this.width = parseInt(ev);
     }
 
     onClose() {
-        this.inventories.closeWindow(this.id);
+        this.open = false;
+        //setTimeout(()=>{
+            this.inventories.closeWindow(this.id);
+        //}, 200);
     }
 
     bringToFront() {
-        console.log('bring to frot');
+        console.log('bring to front');
         for(let i = 0; i < this.inventories.windows.length; i++) {
             let id = this.inventories.windows[i];
             if(id == this.id && i !== this.inventories.windows.length - 1) this.inventories.windows.push(this.inventories.windows.splice(i, 1));

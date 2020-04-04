@@ -1,4 +1,4 @@
-<div class="inventory-window" #invWindow [ngStyle]="{'z-index': index}">
+<div class="inventory-window" #invWindow  [ngStyle]="{'z-index': index, 'width': width + 'px'}">
     <div class="head-container">
         <div class="header" #header>
             {{ inventory.label }}
@@ -7,5 +7,5 @@
             <ion-icon name="md-close"></ion-icon>
         </div>
     </div>
-    <inventory #inventory [id]="id"></inventory>
+    <inventory #inventory [id]="id" (inventoryWidth)="setWidth($event)"></inventory>
 </div>
