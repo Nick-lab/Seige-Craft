@@ -21,8 +21,6 @@ export class Scene extends Phaser.Scene{
         this.load.tilemapTiledJSON('map', 'assets/game_assets/maps/project_seige_01.json');
         this.load.setPath('assets/game_assets/characters');
         (<any>this.load).spine('player', 'skeleton.json', 'skeleton.atlas');
-        
-        
     }
 
     create() {
