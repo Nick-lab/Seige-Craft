@@ -1,0 +1,18 @@
+ 
+ <div class="title">
+    {{ title }}
+</div>
+<div class="window-controls">
+    
+    <div class="win-button min" (click)="onMinimize()">
+        <fa-icon [icon]="['fas','minus']" ></fa-icon>
+    </div>
+    <div class="win-button screen-toggle" (click)="onToggleFullscreen()">
+        <fa-icon [icon]="['fas', (electron.isFullScreen ? 'window-restore' : 'window-maximize')]"></fa-icon>
+    </div>
+    <div class="win-button close" (click)="onClose()">
+        <fa-icon [icon]="['fas','xmark']"></fa-icon>
+    </div>
+</div>
+
+<route-loader class="horizontal"></route-loader>

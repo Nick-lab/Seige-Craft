@@ -1,0 +1,142 @@
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/mixins/breakpoints";
+
+:host {
+    --loader-width: 3px;
+    --loader-start: 10%;
+    --loader-loading: 45%;
+    --loader-complete: 100%;
+
+    &.horizontal {
+        height: 0px;
+        width: 100%;
+        transition: height .2s ease-in-out;
+        
+        &.show {
+            height: var(--loader-width);
+        }
+
+        span.progress {
+            height: 100%;
+            width: 0%;
+            transition-property: width;
+
+            &.start {
+                width: var(--loader-start);
+            }
+            &.loading {
+                width: var(--loader-loading);
+            }
+            &.complete {
+                width: var(--loader-complete);
+            }
+        }
+
+        &.mobile-vertical {
+            @include media-breakpoint-down(sm) {
+                height: 100%;
+                width: 0px;
+                transition: width .2s ease-in-out;
+                
+                &.show {
+                    width: var(--loader-width);
+                }
+
+                span.progress {
+                    height: 0%;
+                    width: 100%;
+                    transition-property: height;
+
+                    &.start {
+                        height: var(--loader-start);
+                    }
+                    &.loading {
+                        height: var(--loader-loading);
+                    }
+                    &.complete {
+                        height: var(--loader-complete);
+                    }
+                }
+            }
+        }
+    }
+
+    &.virtical {
+        height: 100%;
+        width: 0px;
+        transition: width .2s ease-in-out;
+        
+        &.show {
+            width: var(--loader-width);
+        }
+
+        span.progress {
+            height: 0%;
+            width: 100%;
+            transition-property: height;
+
+            &.start {
+                height: var(--loader-start);
+            }
+            &.loading {
+                height: var(--loader-loading);
+            }
+            &.complete {
+                height: var(--loader-complete);
+            }
+        }
+
+        &.mobile-horizontal {
+            @include media-breakpoint-down(sm) {
+                height: 0px;
+                width: 100%;
+                transition: height .2s ease-in-out;
+                
+                &.show {
+                    height: var(--loader-width);
+                }
+        
+                span.progress {
+                    height: 100%;
+                    width: 0%;
+                    transition-property: width;
+        
+                    &.start {
+                        width: var(--loader-start);
+                    }
+                    &.loading {
+                        width: var(--loader-loading);
+                    }
+                    &.complete {
+                        width: var(--loader-complete);
+                    }
+                }
+            }
+        }
+    }
+
+    
+
+    position: absolute;
+    z-index: 1000;
+    
+    span.progress {
+        display: block;
+        background-color: var(--colors-primary--500);
+        transition-delay: .4s;
+        transition-duration: .3s;
+        transition-timing-function: linear;
+        box-shadow: var(--ui-glow);
+
+        &.start {
+            transition-delay: unset;
+        }
+        &.loading {
+            transition-delay: unset;
+        }
+        &.complete {
+            transition-delay: unset;
+        }
+    }
+}
