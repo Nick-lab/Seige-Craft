@@ -12,8 +12,10 @@ export class Player implements Entity {
     private dustParticles!: Phaser.GameObjects.Particles.ParticleEmitter;
 
     dodging = false;
-    rampUpSpeed = 0.3;
-    rampDownSpeed = 0.1;
+    dodgeVelocity = { x: 0, y: 0 };
+
+    rampUpSpeed = 0.5;
+    rampDownSpeed = 1;
     velocity = { x: 0, y: 0 };
 
     constructor(private scene: Scene, private inputs: Inputs) {
@@ -49,6 +51,17 @@ export class Player implements Entity {
             // this.dustParticles
         ]);
         
+        this.inputs['space']?.on('down', () => {
+            if ((Math.abs(this.velocity.x) > 0.4 || Math.abs(this.velocity.y) > 0.4) && !this.dodging) {
+                console.log("dodging");
+                this.dodging = true;
+                this.dodgeVelocity.x = this.velocity.x;
+                this.dodgeVelocity.y = this.velocity.y;
+    
+                this.velocity.x = this.velocity.x * 8;
+                this.velocity.y = this.velocity.y * 8;
+            } 
+        })
     }
 
     // 
@@ -84,15 +97,39 @@ export class Player implements Entity {
             targetVelocity.y /= speed;
         }
 
-        // calculate ramping speed
-        let rampSpeed = (targetVelocity.x === 0 && targetVelocity.y === 0) ? this.rampDownSpeed : this.rampUpSpeed;
+        // if (this.inputs['space']?.isDown && (Math.abs(this.velocity.x) > 0.4 || Math.abs(this.velocity.y) > 0.4) && !this.dodging) {
+        //     console.log("dodging");
+        //     this.dodging = true;
+        //     this.dodgeVelocity.x = this.velocity.x;
+        //     this.dodgeVelocity.y = this.velocity.y;
 
-        // this.dustParticles.emitting = (Math.abs(this.velocity.x) > .5 || Math.abs(this.velocity.y) > .5)
-
-        // applies the ramping
+        //     this.velocity.x = this.velocity.x * 8;
+        //     this.velocity.y = this.velocity.y * 8;
+        // } 
         
-        this.velocity.x = this.lerp(this.velocity.x, targetVelocity.x, rampSpeed);
-        this.velocity.y = this.lerp(this.velocity.y, targetVelocity.y, rampSpeed);
+        
+        if(this.dodging) {
+            this.velocity.x = this.lerp(this.velocity.x, this.dodgeVelocity.x, 0.15);
+            this.velocity.y = this.lerp(this.velocity.y, this.dodgeVelocity.y, 0.15);
+            if(Math.abs(this.velocity.x) <= 1.1 && Math.abs(this.velocity.y) <= 1.1) {
+                this.dodging = false;
+                this.dodgeVelocity = {x: 0, y: 0};
+            }
+
+        } else {
+
+    
+            // calculate ramping speed
+            let rampSpeed = (targetVelocity.x === 0 && targetVelocity.y === 0) ? this.rampDownSpeed : this.rampUpSpeed;
+    
+            // this.dustParticles.emitting = (Math.abs(this.velocity.x) > .5 || Math.abs(this.velocity.y) > .5)
+    
+            // applies the ramping
+            
+            this.velocity.x = this.lerp(this.velocity.x, targetVelocity.x, rampSpeed);
+            this.velocity.y = this.lerp(this.velocity.y, targetVelocity.y, rampSpeed);
+        }
+
         this.group.setVelocity(this.velocity.x * 150, this.velocity.y * 150);
     }
 
