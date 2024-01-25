@@ -18,22 +18,26 @@ export class Player implements Entity {
     rampDownSpeed = 1;
     velocity = { x: 0, y: 0 };
 
+    stamina = 50;
+    maxStamina = 100;
+
+    graphics!: Phaser.GameObjects.Graphics;
+
     constructor(private scene: Scene, private inputs: Inputs) {
 
     }
     // create player group, sprite and weapons
     create() {
         let config = this.scene.physics.getConfig();
-        if(config.debug) {
-            this.debug = {
-                graphics: this.scene.add.graphics({lineStyle: {color: 0xff0000}})
-            }
-        }
+        // if(config.debug) {
+        //     this.debug = {
+        //         graphics: this.scene.add.graphics({lineStyle: {color: 0xff0000}})
+        //     }
+        // }
 
-        
-
-        
+        // Creates the player sprite
         this.player = this.scene.physics.add.sprite(0, 0, '')
+        // Dust particles, when the player moves or dashes.
         this.dustParticles = this.scene.add.particles(200, 200, 'flares',
         {
             frame: 'white',
@@ -55,10 +59,21 @@ export class Player implements Entity {
             // this.dustParticles
         ]);
         
+        this.scene.time.addEvent({
+            delay: 2000, // Every 2 seconds.
+            callback: () => {
+                // Math.min will set stam to +10 and if it ends up greater than Max, it will set it to Max.
+                this.stamina = Math.min(this.stamina + 10, this.maxStamina);
+            },
+            loop: true
+        })
+
+        // Special Inputs
         this.inputs['space']?.on('down', () => {
-            if ((Math.abs(this.velocity.x) > 0.4 || Math.abs(this.velocity.y) > 0.4) && !this.dodging) {
-                console.log("dodging");
+            if ((Math.abs(this.velocity.x) > 0.4 || Math.abs(this.velocity.y) > 0.4) && !this.dodging && this.stamina >= 20) {
+                // console.log("dodging");
                 this.dodging = true;
+                this.stamina -= 20;
                 this.dodgeVelocity.x = this.velocity.x;
                 this.dodgeVelocity.y = this.velocity.y;
     
