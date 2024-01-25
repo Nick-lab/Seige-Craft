@@ -17,6 +17,7 @@ export class TestScene extends Phaser.Scene {
     preload() {
         let camera = this.cameras.main;
 
+        // Preload necessary assets.
         this.load.atlas('flares', 'assets/flares.png', 'assets/flares.json');
         // this.add.text(camera.width / 2, camera.height / 2, "Game", {
         //     fontSize: 20,
