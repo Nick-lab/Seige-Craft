@@ -30,20 +30,24 @@ export class Player implements Entity {
 
         
 
+        
+        this.player = this.scene.physics.add.sprite(0, 0, '')
         this.dustParticles = this.scene.add.particles(200, 200, 'flares',
         {
             frame: 'white',
             color: [ 0x96e0da, 0x937ef3 ],
             colorEase: 'quart.out',
-            lifespan: 1500,
-            angle: { min: -100, max: -80 },
-            scale: { start: 1, end: 0, ease: 'Expo.easeIn' },
-            speed: { min: 50, max: 100 },
-            blendMode: 'ADD',
-            // quantity: 5
+            lifespan: 250,
+            angle: { min: -30, max: 5 },
+            scale: { start: .25, end: 0, ease: 'Expo.easeIn' },
+            // speed: { min: 25, max: 100 },
+            blendMode: Phaser.BlendModes.NORMAL,
+            frequency: 10,
+            emitting: false,
+            stopAfter: 20,
+            follow: this.player,
+            followOffset: {x: -200, y: -190}
         });
-
-        this.player = this.scene.physics.add.sprite(0, 0, '')
         this.group = this.scene.physics.add.group([
             this.player,
             // this.dustParticles
@@ -73,8 +77,11 @@ export class Player implements Entity {
 
         if (this.inputs['left']?.isDown) {
             targetVelocity.x = -1;
+            if(this.velocity.x > 0) this.emitDust('left');
         } else if (this.inputs['right']?.isDown) {
             targetVelocity.x = 1;
+            if(this.velocity.x < 0) this.emitDust('right');
+
         }
 
         var speed = Math.sqrt(targetVelocity.x*targetVelocity.x + targetVelocity.y*targetVelocity.y);
@@ -94,6 +101,21 @@ export class Player implements Entity {
         this.velocity.x = this.lerp(this.velocity.x, targetVelocity.x, rampSpeed);
         this.velocity.y = this.lerp(this.velocity.y, targetVelocity.y, rampSpeed);
         this.group.setVelocity(this.velocity.x * 150, this.velocity.y * 150);
+    }
+
+    emitDust(dir: 'left' | 'right') {
+        switch(dir) {
+            case 'left':
+                this.dustParticles.setEmitterAngle(0)
+                break;
+            case 'right':
+                this.dustParticles.setEmitterAngle(180)
+                break;
+        }
+        // this.dustParticles.emitParticle()
+        // this.dustParticles.setPosition(this.player.x, this.player.y);
+        this.dustParticles.start();
+        // this.dustParticles.emitParticleAt(this.player.x, this.player.y);
     }
 
     lerp(start: number, end: number, speed: number) {
