@@ -64,6 +64,9 @@ export class Player implements Entity {
     
                 this.velocity.x = this.velocity.x * 8;
                 this.velocity.y = this.velocity.y * 8;
+
+                if(this.velocity.x > 0) this.emitDust('right');
+                else if(this.velocity.x < 0) this.emitDust('left');
             } 
         })
     }
