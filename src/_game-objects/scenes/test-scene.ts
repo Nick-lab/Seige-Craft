@@ -32,6 +32,7 @@ export class TestScene extends Phaser.Scene {
             'left': this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.A),
             'down': this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.S),
             'right': this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.D),
+            'space': this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
         }
 
         let player = this.player = new Player(this, this.inputs);
