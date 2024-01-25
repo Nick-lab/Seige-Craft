@@ -1,6 +1,7 @@
 import { Scene } from "phaser";
 import { Entity } from "./entity";
 import { Inputs } from "src/_types/common";
+import { TestScene } from "./scenes/test-scene";
 
 export class Player implements Entity {
 
@@ -18,7 +19,9 @@ export class Player implements Entity {
     rampDownSpeed = 1;
     velocity = { x: 0, y: 0 };
 
-    constructor(private scene: Scene, private inputs: Inputs) {
+    staminaPercent = 1;
+
+    constructor(private scene: TestScene, private inputs: Inputs) {
 
     }
     // create player group, sprite and weapons
@@ -30,8 +33,19 @@ export class Player implements Entity {
             }
         }
 
+        console.log(this.scene.rexUI);
         
+        let stamina = this.scene.rexUI.add.circularProgress(100, 100, 10, 0xffffff, this.staminaPercent)
 
+        // create the tween
+        this.scene.tweens.add({
+            targets: stamina,
+            value: 1,
+            duration: 2000, // Duration in ms
+            ease: 'Sine.easeInOut',  // This is cubic easing function
+            yoyo: true, // If true, the animation will go back to its start value when completed
+            repeat: -1, // -1 means it will repeat forever
+        });
         
         this.player = this.scene.physics.add.sprite(0, 0, '')
         this.dustParticles = this.scene.add.particles(200, 200, 'flares',

@@ -1,6 +1,8 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import * as Phaser from 'phaser';
 import { TestScene } from 'src/_game-objects/scenes/test-scene';
+
+import RexUIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin";
 // import AnimatedTiles from 'phaser-animated-tiles/dist/AnimatedTiles.min.js';
 // import { PhaserNavMeshPlugin } from "phaser-navmesh";
 
@@ -31,8 +33,12 @@ export class GameComponent implements AfterViewInit {
       },
       scene: [TestScene],
       plugins: {
-        global: [
-
+        scene: [
+          {
+            key: 'rexUI',
+            plugin: RexUIPlugin,
+            mapping: 'rexUI'
+          }
         ],
       },
       render: {

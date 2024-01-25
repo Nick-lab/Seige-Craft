@@ -1,8 +1,10 @@
 import { Inputs } from "src/_types/common";
+import RexUIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin";
 import { Entity } from "../entity";
 import { Player } from "../player";
 
 export class TestScene extends Phaser.Scene {
+    rexUI!: RexUIPlugin;
     entities: Array<Entity> = [];
     player!: Player;
 
