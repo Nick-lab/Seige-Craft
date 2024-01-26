@@ -24,7 +24,7 @@ export class TestScene extends Phaser.Scene {
         //     align: 'center',
             
         // });
-
+        this.load.atlas('guy', 'assets/guy_walking.png', 'assets/guy_walking.json');
     }
 
     create() {
@@ -36,10 +36,10 @@ export class TestScene extends Phaser.Scene {
             'down': this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.S),
             'right': this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.D),
             'space': this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
+            'shift': this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT)
         }
 
         let player = this.player = new Player(this, this.inputs);
-        player.create();
         this.entities.push(player);
         
     }

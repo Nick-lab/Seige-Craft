@@ -1,0 +1,495 @@
+{
+	"frames": {
+		"walk_east_1.png": {
+			"frame": {
+				"x": 1,
+				"y": 1,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_east_2.png": {
+			"frame": {
+				"x": 19,
+				"y": 1,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_east_3.png": {
+			"frame": {
+				"x": 37,
+				"y": 1,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_north_1.png": {
+			"frame": {
+				"x": 55,
+				"y": 1,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_north_2.png": {
+			"frame": {
+				"x": 73,
+				"y": 1,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_north_3.png": {
+			"frame": {
+				"x": 1,
+				"y": 27,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_northeast_1.png": {
+			"frame": {
+				"x": 19,
+				"y": 27,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_northeast_2.png": {
+			"frame": {
+				"x": 37,
+				"y": 27,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_northeast_3.png": {
+			"frame": {
+				"x": 55,
+				"y": 27,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_northwest_1.png": {
+			"frame": {
+				"x": 73,
+				"y": 27,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_northwest_3.png": {
+			"frame": {
+				"x": 1,
+				"y": 53,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_northwest_2.png": {
+			"frame": {
+				"x": 19,
+				"y": 53,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_south_1.png": {
+			"frame": {
+				"x": 37,
+				"y": 53,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_south_2.png": {
+			"frame": {
+				"x": 55,
+				"y": 53,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_south_3.png": {
+			"frame": {
+				"x": 73,
+				"y": 53,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_southeast_1.png": {
+			"frame": {
+				"x": 1,
+				"y": 79,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_southeast_2.png": {
+			"frame": {
+				"x": 19,
+				"y": 79,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_southeast_3.png": {
+			"frame": {
+				"x": 37,
+				"y": 79,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_southwest_1.png": {
+			"frame": {
+				"x": 55,
+				"y": 79,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_southwest_2.png": {
+			"frame": {
+				"x": 73,
+				"y": 79,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_southwest_3.png": {
+			"frame": {
+				"x": 91,
+				"y": 1,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_west_1.png": {
+			"frame": {
+				"x": 91,
+				"y": 27,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_west_2.png": {
+			"frame": {
+				"x": 91,
+				"y": 53,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		},
+		"walk_west_3.png": {
+			"frame": {
+				"x": 91,
+				"y": 79,
+				"w": 16,
+				"h": 24
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 16,
+				"h": 24
+			},
+			"sourceSize": {
+				"w": 16,
+				"h": 24
+			}
+		}
+	},
+	"meta": {
+		"app": "http://www.codeandweb.com/texturepacker",
+		"version": "1.0",
+		"image": "spritesheet.png",
+		"format": "RGBA8888",
+		"size": {
+			"w": 108,
+			"h": 104
+		},
+		"scale": "1"
+	}
+}

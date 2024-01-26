@@ -2,65 +2,88 @@ import { Scene } from "phaser";
 import { Entity } from "./entity";
 import { Inputs } from "src/_types/common";
 import { TestScene } from "./scenes/test-scene";
+import { CircularProgress } from "phaser3-rex-plugins/templates/ui/ui-components";
 
 export class Player implements Entity {
 
     // private graphics: Phaser.
-    private group!: Phaser.Physics.Arcade.Group; 
-    private player!: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
+    private group: Phaser.Physics.Arcade.Group; 
+    private player: Phaser.Types.Physics.Arcade.SpriteWithDynamicBody;
 
     private debug?: {graphics: Phaser.GameObjects.Graphics};
-    private dustParticles!: Phaser.GameObjects.Particles.ParticleEmitter;
+    private dustParticles: Phaser.GameObjects.Particles.ParticleEmitter;
 
     dodging = false;
+    canDodge = true;
     dodgeVelocity = { x: 0, y: 0 };
 
     rampUpSpeed = 0.5;
     rampDownSpeed = 1;
     velocity = { x: 0, y: 0 };
+    dodgeSpeedMultiplier = 10;
 
-    staminaPercent = 1;
-    stamina = 50;
+    playerSpeed = 150;
+
+    staminaPercent = .5;
+    private _stamina = 50;
+    get stamina() {return this._stamina}
+    set stamina(val: number) {
+        this._stamina = val;
+        this.staminaPercent = val / this.maxStamina;
+        let color = (this._stamina > 50) ? 0x00ff00 : ((this._stamina > 20) ? 0xffff00 : 0xff0000);
+        this.staminaUi.setValue(this.staminaPercent);
+        this.staminaUi.setBarColor(color);
+    }
     maxStamina = 100;
 
-    graphics!: Phaser.GameObjects.Graphics;
+    staminaUi: CircularProgress;
 
-    constructor(private scene: TestScene, private inputs: Inputs) { }
+    lastRegenTime = this.scene.time.now;
+    regenerationSpeed = 2;
 
-    // create player group, sprite and weapons
-    create() {
+    facingDirection?: string;
+
+    constructor(private scene: TestScene, private inputs: Inputs) {
         let config = this.scene.physics.getConfig();
-        // if(config.debug) {
-        //     this.debug = {
-        //         graphics: this.scene.add.graphics({lineStyle: {color: 0xff0000}})
-        //     }
-        // }
-
-        console.log(this.scene.rexUI);
+        // To see the debug graphics for cursor.
+        if(config.debug) {
+            this.debug = {
+                graphics: this.scene.add.graphics({lineStyle: {color: 0xff0000}})
+            }
+        }
         
-        let stamina = this.scene.rexUI.add.circularProgress(100, 100, 10, 0xffffff, this.staminaPercent)
-
-        // create the tween
-        this.scene.tweens.add({
-            targets: stamina,
-            value: 1,
-            duration: 2000, // Duration in ms
-            ease: 'Sine.easeInOut',  // This is cubic easing function
-            yoyo: true, // If true, the animation will go back to its start value when completed
-            repeat: -1, // -1 means it will repeat forever
-        });
+        let createAnim = (name: string) => {
+            this.scene.anims.create({
+                key: `walk_${name}`,
+                frames: this.scene.anims.generateFrameNames('guy', {
+                    prefix: `walk_${name}_`,
+                    suffix: '.png',
+                    start: 1,
+                    end: 3
+                }),
+                repeat: -1,
+                frameRate: 4,
+                yoyo: true
+            })
+        }
+        for(let dir of ['north', 'northeast', 'east', 'southeast', 'south', 'southwest', 'west', 'northwest']) createAnim(dir);
         
-        this.player = this.scene.physics.add.sprite(0, 0, '')
+        
+        this.staminaUi = this.scene.rexUI.add.circularProgress(100, 100, 10, 0xffffff, this.staminaPercent)
+        this.staminaUi.depth = 10
+        
+        this.player = this.scene.physics.add.sprite(0, 0, 'guy');
+        this.player.scale = 4;
         // Dust particles, when the player moves or dashes.
         this.dustParticles = this.scene.add.particles(200, 200, 'flares',
         {
             frame: 'white',
             color: [ 0x96e0da, 0x937ef3 ],
             colorEase: 'quart.out',
-            lifespan: 250,
-            angle: { min: -30, max: 5 },
+            lifespan: 1000,
+            angle: { min: 0, max: 360 },
             scale: { start: .25, end: 0, ease: 'Expo.easeIn' },
-            // speed: { min: 25, max: 100 },
+            speed: { min: 5, max: 25 },
             blendMode: Phaser.BlendModes.NORMAL,
             frequency: 10,
             emitting: false,
@@ -70,39 +93,89 @@ export class Player implements Entity {
         });
         this.group = this.scene.physics.add.group([
             this.player,
-            // this.dustParticles
         ]);
         
-        this.scene.time.addEvent({
-            delay: 2000, // Every 2 seconds.
-            callback: () => {
-                // Math.min will set stam to +10 and if it ends up greater than Max, it will set it to Max.
-                this.stamina = Math.min(this.stamina + 10, this.maxStamina);
-            },
-            loop: true
-        })
-
         // Special Inputs
         this.inputs['space']?.on('down', () => {
-            if ((Math.abs(this.velocity.x) > 0.4 || Math.abs(this.velocity.y) > 0.4) && !this.dodging && this.stamina >= 20) {
+            if ((Math.abs(this.velocity.x) > 0.4 || Math.abs(this.velocity.y) > 0.4) && !this.dodging && this.canDodge && this.stamina >= 40) {
                 // console.log("dodging");
                 this.dodging = true;
                 this.stamina -= 20;
-                this.dodgeVelocity.x = this.velocity.x;
-                this.dodgeVelocity.y = this.velocity.y;
-    
-                this.velocity.x = this.velocity.x * 8;
-                this.velocity.y = this.velocity.y * 8;
+                let velocity = this.dodgeVelocity = this.velocity;
 
-                if(this.velocity.x > 0) this.emitDust('right');
-                else if(this.velocity.x < 0) this.emitDust('left');
-            } 
+                var speed = Math.sqrt(velocity.x*velocity.x + velocity.y*velocity.y);
+                if (speed > 0) {
+                    // Normalize the velocity
+                    velocity.x /= speed;
+                    velocity.y /= speed;
+                }
+
+                this.velocity = {
+                    x: velocity.x * this.dodgeSpeedMultiplier,
+                    y: velocity.y * this.dodgeSpeedMultiplier
+                }
+                
+                this.canDodge = false;
+                this.removeStamina(20);
+                this.emitDust();
+                this.scene.time.delayedCall(500, () => {
+                    this.canDodge = true;
+                })
+            }
         })
     }
 
     // 
     update() {
         this.updateMove();
+
+        if (this.stamina < this.maxStamina) {
+            if(this.staminaUi.alpha < 1) this.staminaUi.alpha = this.lerp(this.staminaUi.alpha, 1, .2);
+
+            if(this.scene.time.now - this.lastRegenTime >= 50) {
+                this.stamina += this.regenerationSpeed;
+                if (this.stamina > this.maxStamina) {
+                    this.stamina = this.maxStamina;
+                }
+                this.lastRegenTime = this.scene.time.now;
+            }
+        } else {
+            if(this.staminaUi.alpha > 0) this.staminaUi.alpha = this.lerp(this.staminaUi.alpha, 0, .2);
+        }
+
+        if(this.scene.input.activePointer.isDown) {
+            // Get the angle in radians between the mouse pointer and the player
+            let angle = Phaser.Math.Angle.Between(this.player.x, this.player.y,
+                this.scene.input.mousePointer.x, this.scene.input.mousePointer.y);
+
+            // Convert that angle into degrees
+            let angleDeg = Phaser.Math.RadToDeg(angle);
+
+            // Adjust angle degrees to start from North (-90 deg) and wrap at positive degree values
+            angleDeg = (angleDeg + 90 + 360) % 360;
+
+            let direction = '';
+
+            if (angleDeg >= 22.5 && angleDeg < 67.5) {
+                direction = 'northeast';
+            } else if (angleDeg >= 67.5 && angleDeg < 112.5) {
+                direction = 'east';
+            } else if (angleDeg >= 112.5 && angleDeg < 157.5) {
+                direction = 'southeast';
+            } else if (angleDeg >= 157.5 && angleDeg < 202.5) {
+                direction = 'south';
+            } else if (angleDeg >= 202.5 && angleDeg < 247.5) {
+                direction = 'southwest';
+            } else if (angleDeg >= 247.5 && angleDeg < 292.5) {
+                direction = 'west';
+            } else if (angleDeg >= 292.5 && angleDeg < 337.5) {
+                direction = 'northwest';
+            } else {
+                direction = 'north';
+            }
+            this.facingDirection = direction;
+            // console.log(direction);
+        } else this.facingDirection = undefined;
 
         if(this.debug) {
             this.debug.graphics.clear();
@@ -113,20 +186,36 @@ export class Player implements Entity {
 
     private updateMove() {
         let targetVelocity = { x: 0, y: 0 };
+        // set movement direction
+        let direction = '';
 
         if (this.inputs['up']?.isDown) {
             targetVelocity.y = -1;
+            direction += 'north';
         } else if (this.inputs['down']?.isDown) {
             targetVelocity.y = 1;
+            direction += 'south';
         }
 
         if (this.inputs['left']?.isDown) {
             targetVelocity.x = -1;
-            if(this.velocity.x > 0) this.emitDust('left');
+            direction += 'west';
+            // if(this.velocity.x > 0) this.emitDust();
         } else if (this.inputs['right']?.isDown) {
             targetVelocity.x = 1;
-            if(this.velocity.x < 0) this.emitDust('right');
+            direction += 'east';
+            // if(this.velocity.x < 0) this.emitDust();
+        }
 
+        if(direction) {
+            this.player.anims.play(`walk_${this.facingDirection ? this.facingDirection : direction}`, true);
+        } else {
+            // if(this.facingDirection) this.player.anims.setCurrentFrame(this.player.anims.get(`walk_${this.facingDirection}`).getFrameByProgress(.5));
+            this.player.anims.stop();
+            if(this.facingDirection) {
+                let frame = this.scene.anims.get(`walk_${this.facingDirection}`).frames[1];
+                this.player.anims.setCurrentFrame(frame);
+            }
         }
 
         var speed = Math.sqrt(targetVelocity.x*targetVelocity.x + targetVelocity.y*targetVelocity.y);
@@ -135,17 +224,6 @@ export class Player implements Entity {
             targetVelocity.x /= speed; 
             targetVelocity.y /= speed;
         }
-
-        // if (this.inputs['space']?.isDown && (Math.abs(this.velocity.x) > 0.4 || Math.abs(this.velocity.y) > 0.4) && !this.dodging) {
-        //     console.log("dodging");
-        //     this.dodging = true;
-        //     this.dodgeVelocity.x = this.velocity.x;
-        //     this.dodgeVelocity.y = this.velocity.y;
-
-        //     this.velocity.x = this.velocity.x * 8;
-        //     this.velocity.y = this.velocity.y * 8;
-        // } 
-        
         
         if(this.dodging) {
             this.velocity.x = this.lerp(this.velocity.x, this.dodgeVelocity.x, 0.15);
@@ -157,34 +235,25 @@ export class Player implements Entity {
 
         } else {
 
-    
-            // calculate ramping speed
             let rampSpeed = (targetVelocity.x === 0 && targetVelocity.y === 0) ? this.rampDownSpeed : this.rampUpSpeed;
-    
-            // this.dustParticles.emitting = (Math.abs(this.velocity.x) > .5 || Math.abs(this.velocity.y) > .5)
-    
-            // applies the ramping
-            
             this.velocity.x = this.lerp(this.velocity.x, targetVelocity.x, rampSpeed);
             this.velocity.y = this.lerp(this.velocity.y, targetVelocity.y, rampSpeed);
         }
 
-        this.group.setVelocity(this.velocity.x * 150, this.velocity.y * 150);
+        this.group.setVelocity(
+            this.velocity.x * this.playerSpeed,
+            this.velocity.y * this.playerSpeed
+        );
+
+        this.staminaUi.setPosition(this.player.x, this.player.y - 50);
+    }
+    
+    removeStamina (amount: number) {
+        this.stamina = Math.max(this.stamina - amount, 0);
     }
 
-    emitDust(dir: 'left' | 'right') {
-        switch(dir) {
-            case 'left':
-                this.dustParticles.setEmitterAngle(0)
-                break;
-            case 'right':
-                this.dustParticles.setEmitterAngle(180)
-                break;
-        }
-        // this.dustParticles.emitParticle()
-        // this.dustParticles.setPosition(this.player.x, this.player.y);
+    emitDust() {
         this.dustParticles.start();
-        // this.dustParticles.emitParticleAt(this.player.x, this.player.y);
     }
 
     lerp(start: number, end: number, speed: number) {
