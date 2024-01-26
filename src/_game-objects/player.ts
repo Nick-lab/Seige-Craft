@@ -39,7 +39,7 @@ export class Player implements Entity {
     staminaUi: CircularProgress;
 
     lastRegenTime = this.scene.time.now;
-    regenerationSpeed = 2;
+    regenerationSpeed = 1;
 
     facingDirection?: string;
 
@@ -132,7 +132,7 @@ export class Player implements Entity {
         if (this.stamina < this.maxStamina) {
             if(this.staminaUi.alpha < 1) this.staminaUi.alpha = this.lerp(this.staminaUi.alpha, 1, .2);
 
-            if(this.scene.time.now - this.lastRegenTime >= 50) {
+            if(this.scene.time.now - this.lastRegenTime >= 100) {
                 this.stamina += this.regenerationSpeed;
                 if (this.stamina > this.maxStamina) {
                     this.stamina = this.maxStamina;
@@ -145,7 +145,7 @@ export class Player implements Entity {
 
         if(this.scene.input.activePointer.isDown) {
             // Get the angle in radians between the mouse pointer and the player
-            let angle = Phaser.Math.Angle.Between(this.player.x, this.player.y,
+            let angle = Phaser.Math.Angle.Between(this.player.x, this.player.y + 35,
                 this.scene.input.mousePointer.x, this.scene.input.mousePointer.y);
 
             // Convert that angle into degrees
@@ -179,7 +179,7 @@ export class Player implements Entity {
 
         if(this.debug) {
             this.debug.graphics.clear();
-            this.debug.graphics.lineBetween(this.player.x, this.player.y, this.scene.input.mousePointer.x, this.scene.input.mousePointer.y)
+            this.debug.graphics.lineBetween(this.player.x, this.player.y + 35, this.scene.input.mousePointer.x, this.scene.input.mousePointer.y)
             this.debug.graphics.strokePath()
         }
     }
