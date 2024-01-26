@@ -50,7 +50,7 @@ export class GameComponent implements AfterViewInit {
       physics: {
         default: 'arcade',
         arcade: {
-          debug: true,
+          debug: false,
         },
       },
     };
