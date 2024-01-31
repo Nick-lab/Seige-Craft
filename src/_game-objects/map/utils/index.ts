@@ -1,4 +1,4 @@
-import {FACING_TO_MOD, vector} from '../const';
+import {FACING_TO_MOD, Facings, vector} from '../const';
 
 export function iter_adjacent([x, y]: vector, cb: (args: vector)=>void) {
     cb([x - 1, y]);
@@ -55,17 +55,17 @@ export function array_test<T>(array: Array<T>, test: (item: T)=>boolean) {
 }
 
 export function add(p1: vector, p2: vector) {
-    return [p1[0] + p2[0], p1[1] + p2[1]];
+    return [p1[0] + p2[0], p1[1] + p2[1]] as vector;
 }
 
-export function shift(pos: vector, facing: number) {
+export function shift(pos: vector, facing: number): vector {
     return add(pos, FACING_TO_MOD[facing]);
 }
 
-export function shift_left(pos: vector, facing: number) {
+export function shift_left(pos: vector, facing: Facings) {
     return shift(pos,(facing - 90 + 360) % 360);
 }
 
-export function shift_right(pos: vector, facing: number) {
+export function shift_right(pos: vector, facing: Facings) {
     return shift(pos, (facing + 90 + 360) % 360);
 }

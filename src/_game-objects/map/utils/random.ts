@@ -1,4 +1,5 @@
 import * as rng from 'random-seed';
+import { vector } from '../const';
 
 export default class Random {
     rng: rng.RandomSeed;
@@ -14,7 +15,7 @@ export default class Random {
         return this.rng.floatBetween(min, max);
     }
 
-    vec(min: vector, max: vector) {
+    vec(min: vector, max: vector): vector {
         //min and max are vectors [int, int];
         //returns [min[0]<=x<=max[0], min[1]<=y<=max[1]]
         return [this.int(min[0], max[0]), this.int(min[1], max[1])];
