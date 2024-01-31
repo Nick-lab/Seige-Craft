@@ -3,6 +3,7 @@ import { Entity } from "./entity";
 import { Inputs } from "src/_types/common";
 import { TestScene } from "./scenes/test-scene";
 import { CircularProgress } from "phaser3-rex-plugins/templates/ui/ui-components";
+import { Projectile } from "./projectile";
 
 export class Player implements Entity {
 
@@ -150,9 +151,51 @@ export class Player implements Entity {
 
             // Convert that angle into degrees
             let angleDeg = Phaser.Math.RadToDeg(angle);
+            
+            // let velocity = {x: Math.cos(angle) * 1000, y: Math.sin(angle) * 1000};
+            // let offset = {x: Math.cos(angle - .5) * 100 + this.player.x, y: Math.sin(angle - .5) * 100 + this.player.y + 35}
+            // let offset2 = {x: Math.cos(angle + .5) * 100 + this.player.x, y: Math.sin(angle + .5) * 100 + this.player.y + 35}
 
+            // new Projectile(this.scene, {
+            //     position: offset,
+            //     velocity: velocity,
+            //     lifespan: 2000,
+            //     sprite: 'flares',
+            //     // angle,
+            //     // multiShot: 3
+            // });
+            // new Projectile(this.scene, {
+            //     position: offset2,
+            //     velocity: velocity,
+            //     lifespan: 2000,
+            //     sprite: 'flares',
+            //     // angle,
+            //     // multiShot: 3
+            // });
+
+            
+            
             // Adjust angle degrees to start from North (-90 deg) and wrap at positive degree values
             angleDeg = (angleDeg + 90 + 360) % 360;
+            
+            let spread = 48;
+            let spreadDeg = 360 / spread;
+            for(let i = -spread/2; i < spread/2; i++) {
+                // console.log(i);
+                
+                let angle = Phaser.Math.DegToRad((angleDeg - 90) + (spreadDeg * i));
+                let velocity = {x: Math.cos(angle) * 1000, y: Math.sin(angle) * 1000};
+                let offset = {x: Math.cos(angle) * 100 + this.player.x, y: Math.sin(angle) * 100 + this.player.y + 35}
+                new Projectile(this.scene, {
+                    position: offset,
+                    velocity: velocity,
+                    lifespan: 2000,
+                    sprite: 'flares',
+                    // angle,
+                    // multiShot: 3
+                }); 
+            }
+
 
             let direction = '';
 
