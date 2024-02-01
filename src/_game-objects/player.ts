@@ -25,6 +25,8 @@ export class Player implements Entity {
 
     playerSpeed = 150;
 
+    angleOffset = 0;
+
     staminaPercent = .5;
     private _stamina = 50;
     get stamina() {return this._stamina}
@@ -43,7 +45,7 @@ export class Player implements Entity {
     regenerationSpeed = 1;
 
     facingDirection?: string;
-
+    bulletCounter = 0;
     constructor(private scene: TestScene, private inputs: Inputs) {
         let config = this.scene.physics.getConfig();
         // To see the debug graphics for cursor.
@@ -56,14 +58,15 @@ export class Player implements Entity {
         let createAnim = (name: string) => {
             this.scene.anims.create({
                 key: `walk_${name}`,
-                frames: this.scene.anims.generateFrameNames('guy', {
-                    prefix: `walk_${name}_`,
+                frames: this.scene.anims.generateFrameNames('dude', {
+                    prefix: `${name}/`,
                     suffix: '.png',
                     start: 1,
-                    end: 3
+                    end: 10,
+                    zeroPad: 2
                 }),
                 repeat: -1,
-                frameRate: 4,
+                frameRate: 12,
                 yoyo: true
             })
         }
@@ -73,8 +76,8 @@ export class Player implements Entity {
         this.staminaUi = this.scene.rexUI.add.circularProgress(100, 100, 10, 0xffffff, this.staminaPercent)
         this.staminaUi.depth = 10
         
-        this.player = this.scene.physics.add.sprite(0, 0, 'guy');
-        this.player.scale = 4;
+        this.player = this.scene.physics.add.sprite(0, 0, 'dude');
+        this.player.scale = 2;
         // Dust particles, when the player moves or dashes.
         this.dustParticles = this.scene.add.particles(200, 200, 'flares',
         {
@@ -178,24 +181,26 @@ export class Player implements Entity {
             // Adjust angle degrees to start from North (-90 deg) and wrap at positive degree values
             angleDeg = (angleDeg + 90 + 360) % 360;
             
-            let spread = 48;
-            let spreadDeg = 360 / spread;
-            for(let i = -spread/2; i < spread/2; i++) {
-                // console.log(i);
-                
-                let angle = Phaser.Math.DegToRad((angleDeg - 90) + (spreadDeg * i));
-                let velocity = {x: Math.cos(angle) * 1000, y: Math.sin(angle) * 1000};
-                let offset = {x: Math.cos(angle) * 100 + this.player.x, y: Math.sin(angle) * 100 + this.player.y + 35}
-                new Projectile(this.scene, {
-                    position: offset,
-                    velocity: velocity,
-                    lifespan: 2000,
-                    sprite: 'flares',
-                    // angle,
-                    // multiShot: 3
-                }); 
-            }
-
+            // let spread = 48;
+            // let spreadDeg = 360 / spread;
+            // for(let i = -spread/2; i < spread/2; i++) {
+            //     // console.log(i);
+            //     if(Math.round(angleDeg + this.angleOffset) % 2 == 0) continue;
+            //     let angle = Phaser.Math.DegToRad((angleDeg + this.angleOffset - 90) + (spreadDeg * i));
+            //     let velocity = {x: Math.cos(angle) * 1000, y: Math.sin(angle) * 1000};
+            //     let offset = {x: Math.cos(angle) * 100 + this.player.x, y: Math.sin(angle) * 100 + this.player.y + 35}
+            //     new Projectile(this.scene, {
+            //         position: offset,
+            //         velocity: velocity,
+            //         lifespan: 2000,
+            //         sprite: 'flares',
+            //         // angle,
+            //         // multiShot: 3
+            //     }, this.bulletCounter); 
+            // }
+            // this.angleOffset += 1;
+            // console.log(this.bulletCounter);
+            
 
             let direction = '';
 
