@@ -2,6 +2,7 @@ import { Inputs } from "src/_types/common";
 import RexUIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin";
 import { Entity } from "../entity";
 import { Player } from "../player";
+import { Map } from "../map/map";
 
 export class TestScene extends Phaser.Scene {
     rexUI!: RexUIPlugin;
@@ -9,6 +10,7 @@ export class TestScene extends Phaser.Scene {
     player!: Player;
 
     inputs: Inputs = {};
+    map!: Map;
 
     constructor() {
         super({});
@@ -25,6 +27,7 @@ export class TestScene extends Phaser.Scene {
             
         // });
         this.load.atlas('guy', 'assets/guy_walking.png', 'assets/guy_walking.json');
+        this.map = new Map(this);
     }
 
     create() {
@@ -38,10 +41,12 @@ export class TestScene extends Phaser.Scene {
             'space': this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
             'shift': this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT)
         }
+        
+        
+
 
         let player = this.player = new Player(this, this.inputs);
         this.entities.push(player);
-        
     }
 
     override update() {

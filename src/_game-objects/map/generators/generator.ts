@@ -6,7 +6,7 @@ import { FACING_INVERSE, facing, vector, DungeonConfig } from "../const";
 
 export default class Generator extends Piece {
   random: Random;
-  // start_pos: vector = [0, 0];
+  override start_pos: vector = [0, 0];
   minx!: number;
   maxx: number = 0;
   miny!: number;
@@ -36,7 +36,7 @@ export default class Generator extends Piece {
 
   trim() {
     this.size = [this.maxx - this.minx, this.maxy - this.miny];
-    console.log('trim', this.size);
+    console.log('trim', this.size, this.maxx, this.minx, this.maxy, this.miny);
     
     this.children.forEach((child) => {
       child.position = [

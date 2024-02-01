@@ -73,8 +73,12 @@ export class Player implements Entity {
         this.staminaUi = this.scene.rexUI.add.circularProgress(100, 100, 10, 0xffffff, this.staminaPercent)
         this.staminaUi.depth = 10
         
-        this.player = this.scene.physics.add.sprite(0, 0, 'guy');
-        this.player.scale = 4;
+        let init = this.scene.map.dungeon.initial_room;
+        let pos = init ? init.parent_pos(init.get_center_pos()) : [0,0]
+        let ts = this.scene.map.tilesize;
+        
+        this.player = this.scene.physics.add.sprite(pos[0] * ts, pos[1] * ts, 'guy');
+        // this.player.scale = 4;
         // Dust particles, when the player moves or dashes.
         this.dustParticles = this.scene.add.particles(200, 200, 'flares',
         {

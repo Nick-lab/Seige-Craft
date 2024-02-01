@@ -8,7 +8,7 @@ import Piece from "../pieces/piece";
 export class Dungeon extends Generator {
 
   room_tags!: Array<keyof Rooms>
-  // rooms: Array<Room>;
+  rooms!: Rooms;
   // corridors: Array<Corridor>;
   room_count!: number;
   symmetric_rooms!: boolean;
@@ -53,11 +53,11 @@ export class Dungeon extends Generator {
 
     
     super(options);
-    console.log('[Dungeon]:', options);
     Object.assign(this, JSON.parse(JSON.stringify(options)));
+    console.log('[Dungeon]:', options, this.rooms);
     
     this.room_tags = options.rooms ? <Array<keyof Rooms>>Object.keys(options.rooms).filter(
-      (tag) => tag !== "any" && tag !== "initial"
+      (tag) => tag !== "any" && tag !== "initial" && tag !== "boss"
     ) : [];
 
     for (let i = this.room_tags.length; i < this.room_count; i++) {
@@ -68,7 +68,8 @@ export class Dungeon extends Generator {
     // this.corridors = [];
   }
 
-  add_room(room: Piece, exit?: facing, add_to_room?: Piece) {
+  add_room(room: Room, exit?: facing, add_to_room?: Piece) {
+    let log = room.tag === 'boss';
     // add a new piece, exit is local perimeter pos for that exit;
     let choices, old_room;
     // pick a placed room to connect this piece to
@@ -77,6 +78,7 @@ export class Dungeon extends Generator {
       add_to_room = undefined;
     } else {
       choices = this.get_open_pieces(this.children);
+      if(log) console.log(choices);
       if (choices && choices.length) {
         old_room = this.random.choose(choices);
       } else {
@@ -192,18 +194,25 @@ export class Dungeon extends Generator {
         }
       }
     }
+
+    return true;
   }
 
   new_room(key?: keyof Rooms) {
     // spawn next room
-    key = key || this.random.choose(this.room_tags, false);
+    let symmetric = this.symmetric_rooms;
 
-    const opts = this.options.rooms![key];
+    if(key === 'boss') symmetric = true;
+
+    key = key ? key : this.random.choose(this.room_tags, false);
+    if(!key) key = 'any';
+    const opts = this.rooms[key];
+    // console.log({opts, rooms: this.rooms.boss, key});
     
     const room = new Room({
       size: this.random.vec(opts.min_size, opts.max_size),
       max_exits: opts.max_exits,
-      symmetric: this.symmetric_rooms,
+      symmetric,
       tag: key,
     });
 
@@ -217,6 +226,7 @@ export class Dungeon extends Generator {
 
   override generate() {
     let no_rooms = this.options.room_count! - 1;
+
     const room = this.new_room(
       this.options.rooms!.initial ? "initial" : undefined
     );
@@ -250,9 +260,25 @@ export class Dungeon extends Generator {
       }
     }
 
+    if(this.options.rooms?.boss) {
+      let opts = this.options.rooms.boss
+      const boss = this.new_room("boss")
+      
+      this.add_room(
+        boss,
+        
+      )
+    }
+
     for (k = 0; k < this.interconnects; k++) {
       this.add_interconnect();
     }
+
+    // for(let child of this.children) {
+    //   console.log(child);
+      
+    // }
+    
 
     this.trim();
 

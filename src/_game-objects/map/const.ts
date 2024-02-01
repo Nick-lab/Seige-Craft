@@ -65,6 +65,7 @@ export interface DungeonConfig extends Partial<PieceOptions> {
 
 export interface Rooms {
     initial: Room;
+    boss: Room;
     any: Omit<Room, "position">;
 }
 

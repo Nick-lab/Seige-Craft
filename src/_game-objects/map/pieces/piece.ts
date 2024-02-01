@@ -10,6 +10,7 @@ import {
 import { Facings, facing, vector, Rooms } from "../const";
 // import { Rooms } from "../../types";
 import Room from "./room";
+import Corridor from "./corridor";
 
 let next_piece_id = 0;
 
@@ -61,7 +62,7 @@ export default class Piece {
     );
   }
 
-  // is_exit([x, y]) {
+  // is_exit([x, y]: vector) {
   //   return (
   //     this.exits.filter(([exit_x, exit_y, ...rest]) => {
   //       return exit_x === x && exit_y === y;

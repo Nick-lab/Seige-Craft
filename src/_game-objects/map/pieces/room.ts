@@ -1,10 +1,11 @@
-import { Facings, vector } from "../const";
+import { Facings, Rooms, vector } from "../const";
 import Piece, { PieceOptions } from "./piece";
 
 export default class Room extends Piece {
 
   symmetric!: boolean;
   room_size!: vector;
+  tag?: keyof Rooms;
   // perimeter!: Array<[vector, Facings]>
   constructor(options: RoomOptions) {
 
