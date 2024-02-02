@@ -4,6 +4,7 @@ import Room from "./room";
 
 export default class Corridor extends Room {
   facing!: Facings;
+  prune = false;
 
   constructor(options: CorridorOptions) {
     options = Object.assign(

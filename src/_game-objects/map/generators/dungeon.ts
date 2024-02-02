@@ -1,7 +1,7 @@
 import Generator from "./generator";
 import Corridor from "../pieces/corridor";
 import Room from "../pieces/room";
-import { FACING, Facings, facing, vector, DungeonConfig, Rooms } from "../const";
+import { FACING, Facings, facing, vector, DungeonConfig, Rooms, TOP, BOTTOM, LEFT, RIGHT } from "../const";
 import { shift_left, shift_right, shift } from "../utils";
 import Piece from "../pieces/piece";
 
@@ -95,12 +95,27 @@ export class Dungeon extends Generator {
       }
       // else try all perims to see
     } else {
-      const perim = room.perimeter.slice();
-      while (perim.length) {
-        if (this.join(old_room, this.random.choose(perim, true), room)) {
-          return true;
+      let perim = room.perimeter.slice()
+      
+      if(room.tag === 'boss') {
+        perim = room.perimeter.slice().filter(([v, f]) => f === TOP);
+        let placed = false;
+        while(!placed) {
+          placed = (<Room>old_room).tag !== 'initial' && this.join(old_room, perim[0], room);
+          if(!placed) old_room = this.random.choose(choices!);
+          else return true;
+        }
+      } else {
+        while (perim.length) {
+          let chosen = this.random.choose(perim, true);
+          if (this.join(old_room, chosen, room)) {
+            if(log) console.log({chosen});
+            
+            return true;
+          }
         }
       }
+
     }
 
     return false;
@@ -224,6 +239,16 @@ export class Dungeon extends Generator {
     return room;
   }
 
+  clean_corridors() {
+    for(let c of <Array<Corridor>>this.children.filter(c => c instanceof Corridor)) {
+      if(c.exits.length <= 1) {
+        c.prune = true;
+        console.log(c, c.parent);
+        
+      }
+    }
+  }
+
   override generate() {
     let no_rooms = this.options.room_count! - 1;
 
@@ -261,24 +286,17 @@ export class Dungeon extends Generator {
     }
 
     if(this.options.rooms?.boss) {
-      let opts = this.options.rooms.boss
-      const boss = this.new_room("boss")
-      
-      this.add_room(
-        boss,
-        
-      )
+      let added = false;
+      added = this.add_room(this.new_room("boss"));
+      // while(!added) {
+      // }
     }
 
     for (k = 0; k < this.interconnects; k++) {
       this.add_interconnect();
     }
 
-    // for(let child of this.children) {
-    //   console.log(child);
-      
-    // }
-    
+    this.clean_corridors();
 
     this.trim();
 
@@ -290,40 +308,3 @@ export class Dungeon extends Generator {
     return iterations > 0;
   }
 }
-
-export const getMapMaxX = (data: any) =>
-  (data && data.length && data[0].length) || 0;
-
-export const getMapMaxY = (data: any) => (data && data.length) || 0;
-
-export const scaleArray = (array: Array<any>, scaleX = 1, scaleY = scaleX) => {
-  const sizeX = scaleX * getMapMaxX(array);
-  const sizeY = scaleY * getMapMaxY(array);
-
-  return Array.from({ length: sizeY }, (_, y) =>
-    Array.from(
-      { length: sizeX },
-      (_, x) => array[Math.floor(y / scaleY)][Math.floor(x / scaleX)]
-    )
-  );
-};
-
-export const createDungeon = (size: number, scale: number = 1, options: DungeonConfig) => {
-  const dungeon = new Dungeon(
-    size
-      ? Object.assign(
-          {
-            size: [size, size],
-            room_count: size,
-          },
-          options
-        )
-      : options
-  );
-
-  dungeon.generate();
-
-  return scale === 1
-    ? dungeon.walls.rows
-    : scaleArray(dungeon.walls.rows, scale);
-};

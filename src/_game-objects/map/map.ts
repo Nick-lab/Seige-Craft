@@ -12,14 +12,15 @@ export class Map {
     constructor(private scene: Phaser.Scene) {
         let dungeon = this.dungeon = new Dungeon({
             size: this.size,
+            // seed: 'test',
             rooms: {
                 boss: {
-                    min_size: [15, 10],
-                    max_size: [15, 10],
+                    min_size: [25, 15],
+                    max_size: [25, 15],
                     max_exits: 1
                 },
                 initial: {
-                    min_size: [5, 5],
+                    min_size: [10, 10],
                     max_size: [10, 10],
                     max_exits: 2
                 },
@@ -29,10 +30,10 @@ export class Map {
                     max_exits: 3
                 }
             },
-            max_corridor_length: 8,
-            min_corridor_length: 3,
-            corridor_density: .5,
-            room_count: 15,
+            max_corridor_length: 3,
+            min_corridor_length: 1,
+            corridor_density: .95,
+            room_count: 10,
             interconnects: 0
         });
         
@@ -49,7 +50,8 @@ export class Map {
                 // console.log('Corridor', c, `Prune: ${c.exits.length <= 1}`);
                 // if(c.exits.length <= 1) continue;
                 let { position, size } = c;
-                this.graphics.lineStyle(2, 0x0fffff, .5)
+                if(c.prune) this.graphics.lineStyle(2, 0xff0000, .5)
+                else this.graphics.lineStyle(2, 0x0fffff, .5)
                 this.graphics.strokeRect(
                     (position[0] + 1) * this.tilesize, 
                     (position[1] + 1) * this.tilesize, 

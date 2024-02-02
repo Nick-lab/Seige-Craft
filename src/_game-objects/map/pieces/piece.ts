@@ -137,6 +137,9 @@ export default class Piece {
   }
 
   add_perimeter(p_from: vector, p_to: vector, facing: Facings) {
+    if((<any>this).tag === 'boss') {
+      console.log(p_from, p_to, facing);
+    } 
     iter_range(p_from, p_to, (pos) => {
       this.perimeter.push([pos, facing]);
     });

@@ -34,16 +34,16 @@ export default class Room extends Piece {
 
     if (!this.symmetric) {
       // any point at any wall can be exit
-      this.add_perimeter([1, 0], [this.size[0] - 2, 0], 180);
-      this.add_perimeter([0, 1], [0, this.size[1] - 2], 90);
+      this.add_perimeter([2, 0], [this.size[0] - 3, 0], 180);
+      this.add_perimeter([0, 2], [0, this.size[1] - 3], 90);
       this.add_perimeter(
-        [1, this.size[1] - 1],
-        [this.size[0] - 2, this.size[1] - 1],
+        [2, this.size[1] - 1], 
+        [this.size[0] - 3, this.size[1] - 1],
         0
       );
       this.add_perimeter(
-        [this.size[0] - 1, 1],
-        [this.size[0] - 1, this.size[1] - 2],
+        [this.size[0] - 1, 2],
+        [this.size[0] - 1, this.size[1] - 3],
         270
       );
     } else {
