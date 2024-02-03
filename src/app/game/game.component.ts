@@ -28,6 +28,7 @@ export class GameComponent implements AfterViewInit {
       parent: container,
       scale: {
         mode: Phaser.Scale.RESIZE,
+        zoom: Phaser.Scale.ZOOM_4X,
         width: "100%",
         height: "100%"
       },
