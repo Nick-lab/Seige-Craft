@@ -26,7 +26,8 @@ export class TestScene extends Phaser.Scene {
         //     align: 'center',
             
         // });
-        this.load.atlas('guy', 'assets/guy_walking.png', 'assets/guy_walking.json');
+        // this.load.atlas('guy', 'assets/guy_walking.png', 'assets/guy_walking.json');
+        this.load.atlas('dude', 'assets/walking_anim.png', 'assets/walking_anim.json');
         this.map = new Map(this);
     }
 
