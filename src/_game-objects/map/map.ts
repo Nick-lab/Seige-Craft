@@ -30,17 +30,10 @@ export class Map {
                     max_exits: 3
                 }
             },
-<<<<<<< HEAD
             max_corridor_length: 3,
             min_corridor_length: 1,
             corridor_density: .95,
             room_count: 10,
-=======
-            max_corridor_length: 8,
-            min_corridor_length: 3,
-            corridor_density: .25,
-            room_count: 15,
->>>>>>> 645d873e5de72d4cde25d1ce247fd0a995f5a56e
             interconnects: 0
         });
         
