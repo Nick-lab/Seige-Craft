@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { Dungeon } from '../_game-objects/map/generators/dungeon';
-
 
 @Component({
   selector: 'app-root',
@@ -8,7 +6,7 @@ import { Dungeon } from '../_game-objects/map/generators/dungeon';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'Roguelike';
+  title = 'Seige';
 
   constructor() {
     

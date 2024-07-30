@@ -1,56 +1,18 @@
 import { Inputs } from "src/_types/common";
 import RexUIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin";
-import { Entity } from "../entity";
-import { Player } from "../player";
-import { Map } from "../map/map";
 
 export class TestScene extends Phaser.Scene {
-    rexUI!: RexUIPlugin;
-    entities: Array<Entity> = [];
-    player!: Player;
-
-    inputs: Inputs = {};
-    map!: Map;
-
-    constructor() {
-        super({});
-    }
-
+    graphics!: Phaser.GameObjects.Graphics;
+    GRAVITY = 6;
     preload() {
-        let camera = this.cameras.main;
-
-        // Preload necessary assets.
-        this.load.atlas('flares', 'assets/flares.png', 'assets/flares.json');
-        // this.add.text(camera.width / 2, camera.height / 2, "Game", {
-        //     fontSize: 20,
-        //     align: 'center',
-            
-        // });
-        // this.load.atlas('guy', 'assets/guy_walking.png', 'assets/guy_walking.json');
-        this.load.atlas('dude', 'assets/walking_anim.png', 'assets/walking_anim.json');
-        this.map = new Map(this);
+        this.load.image('grid', 'assets/game_assets/debug-grid-1920x1920.png');
     }
 
     create() {
-        console.log(this.physics.getConfig());
-        
-        this.inputs = {
-            'up': this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.W),
-            'left': this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.A),
-            'down': this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.S),
-            'right': this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.D),
-            'space': this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE),
-            'shift': this.input.keyboard?.addKey(Phaser.Input.Keyboard.KeyCodes.SHIFT)
-        }
-        
-        
-
-
-        let player = this.player = new Player(this, this.inputs);
-        this.entities.push(player);
+        this.add.image(0, 0, 'grid').setOrigin(0).setAlpha(0.5);
+        this.graphics = this.add.graphics();
+        this.cameras.main.zoom = 2;
+        this.cameras.main.roundPixels = true;
     }
 
-    override update() {
-        for(let e of this.entities) e.update();
-    }
 }

@@ -1,0 +1,34 @@
+
+skeleton.png
+size: 512,256
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Survivor Sheet
+  rotate: false
+  xy: 2, 58
+  size: 276, 136
+  orig: 276, 136
+  offset: 0, 0
+  index: -1
+m4a1
+  rotate: false
+  xy: 280, 124
+  size: 178, 70
+  orig: 178, 70
+  offset: 0, 0
+  index: -1
+mp5
+  rotate: false
+  xy: 280, 55
+  size: 140, 67
+  orig: 140, 67
+  offset: 0, 0
+  index: -1
+sks
+  rotate: false
+  xy: 2, 2
+  size: 275, 54
+  orig: 275, 54
+  offset: 0, 0
+  index: -1

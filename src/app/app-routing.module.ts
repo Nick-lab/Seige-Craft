@@ -7,8 +7,12 @@ const routes: Routes = [
     loadChildren: () => import('./game/game.module').then(m => m.GamePageModule)
   },
   {
+    path: 'inventory',
+    loadChildren: () => import('./inventory/inventory.module').then(m => m.InvenotryPageModule)
+  },
+  {
     path: '',
-    redirectTo: 'game',
+    redirectTo: 'inventory',
     pathMatch: 'full'
   }
 ];

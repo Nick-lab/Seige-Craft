@@ -19,10 +19,15 @@
     "target": "ES2022",
     "module": "ES2022",
     "useDefineForClassFields": false,
+    "allowJs": true,
     "lib": [
       "ES2022",
       "dom",
       "ScriptHost"
+    ],
+    "typeRoots": [
+      "node_modules/@types",
+      "node_module/phaser/types"
     ]
   },
   "angularCompilerOptions": {

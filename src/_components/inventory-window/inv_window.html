@@ -1,0 +1,11 @@
+<div class="inventory-window" #invWindow  [ngStyle]="{'z-index': index, 'width': width + 'px'}">
+    <div class="head-container">
+        <div class="header" #header>
+            {{ inventory.inventory?.label }}
+        </div>
+        <div class="close" (click)="onClose()">
+            <fa-icon [icon]="['fas','xmark']"></fa-icon>
+        </div>
+    </div>
+    <inventory #inventory [id]="id" (inventoryWidth)="setWidth($event)"></inventory>
+</div>

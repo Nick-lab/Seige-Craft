@@ -3,8 +3,10 @@ import * as Phaser from 'phaser';
 import { TestScene } from 'src/_game-objects/scenes/test-scene';
 
 import RexUIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin";
-// import AnimatedTiles from 'phaser-animated-tiles/dist/AnimatedTiles.min.js';
-// import { PhaserNavMeshPlugin } from "phaser-navmesh";
+
+// @ts-ignore
+import { SpineWebGLPlugin } from "phaser/plugins/spine/dist/SpineWebGLPlugin";
+
 
 @Component({
   selector: 'app-game',
@@ -23,7 +25,7 @@ export class GameComponent implements AfterViewInit {
     if (!container) throw new Error('Container not found');
 
     const Config: Phaser.Types.Core.GameConfig = {
-      type: Phaser.WEBGL,
+      type: Phaser.AUTO,
       backgroundColor: '#000',
       parent: container,
       scale: {
@@ -39,7 +41,8 @@ export class GameComponent implements AfterViewInit {
             key: 'rexUI',
             plugin: RexUIPlugin,
             mapping: 'rexUI'
-          }
+          },
+          { key: 'SpineWebGLPlugin', plugin: SpineWebGLPlugin, start: true, sceneKey: 'spine' }
         ],
       },
       render: {

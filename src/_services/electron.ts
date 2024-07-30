@@ -4,7 +4,7 @@ declare var electronAPI: ElectronAPI;
 @Injectable()
 export class ElectronProvider {
     
-    window_title: string = `Roguelike`;
+    window_title: string = `Seige Reloaded`;
 
     constructor() {
         

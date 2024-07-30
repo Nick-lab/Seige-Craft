@@ -1,0 +1,9 @@
+<img #Image *ngIf="item?.icon" [src]="item?.icon">
+<span class="stack" *ngIf="item?.amount !== undefined && item?.amount! > 1">{{ getAmount }}</span>
+<div class="context" [@context]="contextOpen" [ngStyle]="{'top': contextPos.y + 'px', 'left': contextPos.x + 'px'}" (mouseleave)="onCloseContext($event)">
+    <ul>
+        <li *ngFor="let context of contexts">
+            <a (click)="context.action()">{{ context.label }}</a>
+        </li>
+    </ul>
+</div>
